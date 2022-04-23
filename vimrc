@@ -87,8 +87,11 @@ call mkdir($XDG_DATA_HOME."/vim/spell", 'p', 0700)
 " PLUGINS {{{
 " vim-plug {{{
 call plug#begin($XDG_DATA_HOME.'/vim/plugged')
+" async language server protocol plugin for vim and neovim
 Plug 'prabirshrestha/vim-lsp'
+" auto configurations for Language Server for vim-lsp
 Plug 'mattn/vim-lsp-settings'
+" async completion in pure vim script for vim8 and neovim
 Plug 'prabirshrestha/asyncomplete.vim'
 Plug 'sqrtmau/asyncomplete-lsp.vim'
 Plug 'prabirshrestha/asyncomplete-file.vim'
@@ -222,11 +225,9 @@ nmap <silent> gi <Plug>(lsp-implementation)
 nmap <silent> gr <Plug>(lsp-references)
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 
-" close diagnostics float preview on insert mode
 augroup MyLspDiagnsotics
     autocmd!
-"   autocmd BufWritePost,InsertLeave * call lsp#enable_diagnostics_for_buffer()
-"   autocmd InsertEnter,CursorMovedI,TextChangedI,TextChangedP * call lsp#disable_diagnostics_for_buffer()
+    " close diagnostics float preview on insert mode
     autocmd InsertEnter * call popup_clear()
 augroup END
 
@@ -259,39 +260,40 @@ endfunction
 " }}}
 " vim-lsp-settings {{{
 let g:lsp_settings = {}
-let g:lsp_settings['pyright-langserver'] = {
-            \'config': {
-                \'completion_item_kinds': {
-                    \'1': '',
-                    \'2': 'ﬦ',
-                    \'3': '',
-                    \'4': '',
-                    \'5': '',
-                    \'6': '',
-                    \'7': 'פּ',
-                    \'8': '',
-                    \'9': '',
-                    \'10': '',
-                    \'11': '',
-                    \'12': '',
-                    \'13': '',
-                    \'14': '',
-                    \'15': '',
-                    \'16': '',
-                    \'17': '',
-                    \'18': '',
-                    \'19': '',
-                    \'20': '',
-                    \'21': '',
-                    \'22': '',
-                    \'23': '',
-                    \'24': '',
-                    \'25': '',
-                    \}
-                \},
-            \'workspace_config': {
-                \'python': {'analysis': {'autoImportCompletions': v:false}}
-                \}}
+let s:lsp_completion_item_kinds = {
+            \'1': '',
+            \'2': 'ﬦ',
+            \'3': '',
+            \'4': '',
+            \'5': '',
+            \'6': '',
+            \'7': 'פּ',
+            \'8': '',
+            \'9': '',
+            \'10': '',
+            \'11': '',
+            \'12': '',
+            \'13': '',
+            \'14': '',
+            \'15': '',
+            \'16': '',
+            \'17': '',
+            \'18': '',
+            \'19': '',
+            \'20': '',
+            \'21': '',
+            \'22': '',
+            \'23': '',
+            \'24': '',
+            \'25': '',
+            \}
+for s in ['clangd', 'pyright-langserver', 'vim-language-server', 'texlab', 'deno']
+    let g:lsp_settings[s] = {'config': {
+                \'completion_item_kinds': s:lsp_completion_item_kinds}}
+endfor
+let g:lsp_settings['pyright-langserver']['workspace_config'] = {
+            \'python': {'analysis': {'autoImportCompletions': v:false}}
+            \}
 " }}}
 " asyncomplete.vim {{{
 let g:asyncomplete_popup_delay = 50
@@ -524,8 +526,6 @@ let g:vimtex_view_general_options = '--unique file:@pdf\#src:@line@tex'
 " }}}
 " markdown-preview.nvim {{{
 function! g:OpenUrl(url) abort
-    " call system('qutebrowser --target private-window -T -C ~/.config/qutebrowser/config.py ' . a:url)
-    " silent exec '!qutebrowser --target private-window -T -C ~/.config/qutebrowser/config.py ' . a:url
     call job_start(['sh', '-c', 'qutebrowser --target private-window -T -C ~/.config/qutebrowser/config.py ' . shellescape(a:url)])
 endfunction
 let g:mkdp_auto_close = 0
@@ -592,7 +592,7 @@ nmap <leader>q <Plug>(qf_qf_toggle)
 " let g:netrw_keepdir = 0
 let g:netrw_list_hide = '\(^\|\s\s\)\zs\.\S\+'
 " let g:netrw_hide = 1
-let g:netrw_home = '~/.cache/vim'
+let g:netrw_home = $XDG_CACHE_HOME . 'vim'
 " Preview in vertically split window
 let g:netrw_preview = 1
 " }}}
