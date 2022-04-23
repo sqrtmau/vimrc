@@ -1,0 +1,38 @@
+snippet ds "Collpasable block"
+<details><summary>$1</summary>
+
+$2
+</details>
+endsnippet
+
+snippet eqa "Equation array"
+\left\\{
+\begin{array}{${1:l}}
+$2
+\end{array}
+\right.
+endsnippet
+
+snippet fig "Styled figure"
+<figure style="text-align:${1:center}">
+<img src="$2" alt="$3" width="${4:62%}">
+</figure>
+endsnippet
+
+snippet figc "Styled figure with caption"
+<figure style="text-align:${1:center}">
+<img src="$2" alt="$3" width="${4:62%}">
+<figcaption>$5</figcaption>
+</figure>
+endsnippet
+
+snippet sc "Hugo shortcode {{< >}}"
+{{< $1 >}}
+endsnippet
+
+snippet scp "Hugo paired shortcode {{< / >}}"
+{{< $1 >}}
+$2
+{{< /$1 >}}
+endsnippet
+

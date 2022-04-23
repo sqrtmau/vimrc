@@ -1,0 +1,34 @@
+snippet frame "Frame environment" b
+\begin{frame}[c]{${1:title}}
+    $0
+\end{frame}
+endsnippet
+
+snippet mini "minipage environment" b
+\begin{minipage}{$1\linewidth}
+    $0
+\end{minipage}
+endsnippet
+
+snippet minipage "minipage env (full signiture)" b
+\begin{minipage}[${1:position}][${2:height}][${3:inner-pos}]{${4:width}}
+    $0
+\end{minipage}
+endsnippet
+
+snippet mini2 "side-by-side minipages" b
+\begin{minipage}{${1:.5}\linewidth}
+    $2
+\end{minipage}\hfill%
+\begin{minipage}{$1\linewidth}
+    $3
+\end{minipage}%
+endsnippet
+
+snippet SIr "SIrange"
+\SIrange{$1}{$2}{$3}
+endsnippet
+
+snippet includegraphics "includegraphics"
+\includegraphics[width=${1:.8}\linewidth]{$2}
+endsnippet
