@@ -1,4 +1,4 @@
-" CORE {{{1
+" CORE {{{
 " Encoding of current vimscript
 scriptencoding utf-8
 set nocompatible
@@ -61,8 +61,8 @@ set ttymouse=sgr
 if empty(v:servername) && exists('*remote_startserver')
     call remote_startserver('VIM')
 endif
-
-" XDG support {{{1
+" }}}
+" XDG support {{{
 " `set rtp^=$XDG_CONFIG_HOME/vim` is in $VIMINIT
 
 if empty($XDG_CACHE_HOME)  | let $XDG_CACHE_HOME  = $HOME."/.cache"       | endif
@@ -79,14 +79,23 @@ set undodir=$XDG_CACHE_HOME/vim/undo     | call mkdir(&undodir,   'p', 0700)
 set viewdir=$XDG_CACHE_HOME/vim/view     | call mkdir(&viewdir,   'p', 0700)
 
 if !has('nvim') " Neovim has its own special location
-  set viminfo+=n$XDG_CACHE_HOME/vim/viminfo
+    set viminfo+=n$XDG_CACHE_HOME/vim/viminfo
 endif
 
 call mkdir($XDG_DATA_HOME."/vim/spell", 'p', 0700)
 " }}}
-" PLUGINS {{{1
-" vim-plug {{{2
+" PLUGINS {{{
+" vim-plug {{{
 call plug#begin($XDG_DATA_HOME.'/vim/plugged')
+Plug 'prabirshrestha/vim-lsp'
+Plug 'mattn/vim-lsp-settings'
+Plug 'prabirshrestha/asyncomplete.vim'
+Plug 'sqrtmau/asyncomplete-lsp.vim'
+Plug 'prabirshrestha/asyncomplete-file.vim'
+Plug 'hiterm/asyncomplete-look'
+Plug 'prabirshrestha/asyncomplete-emoji.vim'
+Plug 'prabirshrestha/async.vim'
+Plug 'wellle/tmux-complete.vim'
 Plug 'sillybun/vim-repl'
 " use CTRL-A/CTRL-X to increment dates, times, and more
 Plug 'tpope/vim-speeddating'
@@ -99,9 +108,6 @@ Plug 'Shougo/neoyank.vim'
 Plug 'tpope/vim-vinegar'
 " Tame the quickfix window
 Plug 'romainl/vim-qf'
-" Intellisense engine for vim8 & neovim,
-" full language server protocol support as VSCode
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'igankevich/mesonic'
 " Cross-file find and replace
 Plug 'brooth/far.vim'
@@ -163,7 +169,7 @@ Plug 'luochen1990/rainbow'
 " Asynchronous translating plugin for Vim/Neovim
 Plug 'voldikss/vim-translator'
 Plug 'iamcco/markdown-preview.nvim', {'do': 'cd app && yarn install'}
-" Polyglot {{{3
+" Polyglot {{{
 Plug '~/Documents/projects/1-maintaining/vim-markdown'
 Plug 'cespare/vim-toml'
 Plug 'Glench/Vim-Jinja2-Syntax'
@@ -177,7 +183,7 @@ Plug 'fatih/vim-go'
 Plug 'MTDL9/vim-log-highlighting'
 Plug 'octol/vim-cpp-enhanced-highlight'
 " }}}
-" Themes {{{3
+" Themes {{{
 " A simplified and optimized Gruvbox colorscheme for Vim
 Plug 'lifepillar/vim-gruvbox8'
 Plug 'rakr/vim-one'
@@ -196,88 +202,180 @@ Plug 'cormacrelf/vim-colors-github'
 Plug 'sainnhe/forest-night'
 " }}}
 call plug#end()
-
-" UltiSnips {{{2
-let g:UltiSnipsExpandTrigger = '<c-j>'
-let g:UltiSnipsListSnippets = '<c-l>'
 " }}}
-" coc.nvim {{{2
-let g:coc_config_home = $XDG_CONFIG_HOME . '/coc'
-let g:coc_data_home = $XDG_DATA_HOME . '/coc'
-let g:coc_status_error_sign = ' '
-let g:coc_status_warning_sign = ' '
-
-let g:coc_global_extensions = [
-            \ "coc-browser",
-            \ "coc-calc",
-            \ "coc-clangd",
-            \ "coc-css",
-            \ "coc-emoji",
-            \ "coc-highlight",
-            \ "coc-html",
-            \ "coc-json",
-            \ "coc-marketplace",
-            \ "coc-pyright",
-            \ "coc-rls",
-            \ "coc-sh",
-            \ "coc-svg",
-            \ "coc-tag",
-            \ "coc-texlab",
-            \ "coc-tsserver",
-            \ "coc-ultisnips",
-            \ "coc-vetur",
-            \ "coc-vimlsp",
-            \ "coc-word",
-            \ "coc-yaml",
-            \ "coc-webpack",
-            \]
-
-" Highlight symbol under cursor on CursorHold
-autocmd CursorHold * silent call CocActionAsync('highlight')
-
-nmap <silent> [g <Plug>(coc-diagnostic-prev)
-nmap <silent> ]g <Plug>(coc-diagnostic-next)
-nmap <silent> <leader>cR  <Plug>(coc-rename)
-nmap <silent> <leader>cr  <Plug>(coc-refactor)
-xmap <silent> <leader>cf  <Plug>(coc-format-selected)
-nmap <silent> <leader>cf  <Plug>(coc-format-selected)
-xmap <silent> <leader>cas <Plug>(coc-codeaction-selected)
-nmap <silent> <leader>cas <Plug>(coc-codeaction-selected)
-nmap <silent> <leader>ca  <Plug>(coc-codeaction)
-nmap <silent> <leader>cqf <Plug>(coc-fix-current)
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
-nnoremap <silent> <leader>cl  :<C-u>CocList<cr>
-nnoremap <silent> <leader>cc  :<C-u>CocList commands<cr>
-nnoremap <silent> <leader>ce  :<C-u>CocList extensions<cr>
-nnoremap <silent> <leader>co  :<C-u>CocList outline<cr>
-nnoremap <silent> <leader>cp  :<C-u>CocListResume<cr>
+" vim-lsp {{{
+let g:lsp_diagnostics_float_cursor = 1
+let g:lsp_diagnostics_signs_error = {'text': ''}
+let g:lsp_diagnostics_signs_warning = {'text': ''}
+let g:lsp_diagnostics_signs_information = {'text': ''}
+let g:lsp_diagnostics_signs_hint = {'text': 'ﯦ'}
+nmap <silent> [g <Plug>(lsp-previous-diagnostic)
+nmap <silent> ]g <Plug>(lsp-next-diagnostic)
+nmap <silent> <leader>cr  <Plug>(lsp-rename)
+xmap <silent> <leader>cf  <Plug>(lsp-document-range-format)
+nmap <silent> <leader>cf  <Plug>(lsp-document-range-format)
+nmap <silent> <leader>ca  <Plug>(lsp-code-action)
+nmap <silent> <leader>cl  <Plug>(lsp-code-lens)
+nmap <silent> gd <Plug>(lsp-definition)
+nmap <silent> gy <Plug>(lsp-declaration)
+nmap <silent> gi <Plug>(lsp-implementation)
+nmap <silent> gr <Plug>(lsp-references)
 nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+" close diagnostics float preview on insert mode
+augroup MyLspDiagnsotics
+    autocmd!
+"   autocmd BufWritePost,InsertLeave * call lsp#enable_diagnostics_for_buffer()
+"   autocmd InsertEnter,CursorMovedI,TextChangedI,TextChangedP * call lsp#disable_diagnostics_for_buffer()
+    autocmd InsertEnter * call popup_clear()
+augroup END
 
 function! s:show_documentation()
     if (index(['vim','help'], &filetype) >= 0)
         execute 'h '.expand('<cword>')
     else
-        call CocAction('doHover')
+        LspHover
     endif
 endfunction
 
-" Use tab for trigger completion with characters ahead and navigate.
-" Validate the mappings with command ':verbose imap <tab>'
-inoremap <silent><expr> <TAB>
-            \ pumvisible() ? "\<C-n>" :
-            \ <SID>check_back_space() ? "\<TAB>" :
-            \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-
-function! s:check_back_space() abort
-    let col = col('.') - 1
-    return !col || getline('.')[col - 1]  =~# '\s'
+function! g:LspStatus()
+    const status = lsp#get_buffer_diagnostics_counts()
+    let msg = ''
+    let num = status['error']
+    let icon = g:lsp_diagnostics_signs_error['text']
+    if  num != 0
+        let msg .= icon . ' ' . num
+    endif
+    let num = status['warning']
+    let icon = g:lsp_diagnostics_signs_warning['text']
+    if status['warning'] != 0
+        if !empty(msg)
+            let msg .= ' '
+        endif
+        let msg .= icon . ' ' . num
+    endif
+    return msg
 endfunction
 " }}}
-" vimspector {{{2
+" vim-lsp-settings {{{
+let g:lsp_settings = {}
+let g:lsp_settings['pyright-langserver'] = {
+            \'config': {
+                \'completion_item_kinds': {
+                    \'1': '',
+                    \'2': 'ﬦ',
+                    \'3': '',
+                    \'4': '',
+                    \'5': '',
+                    \'6': '',
+                    \'7': 'פּ',
+                    \'8': '',
+                    \'9': '',
+                    \'10': '',
+                    \'11': '',
+                    \'12': '',
+                    \'13': '',
+                    \'14': '',
+                    \'15': '',
+                    \'16': '',
+                    \'17': '',
+                    \'18': '',
+                    \'19': '',
+                    \'20': '',
+                    \'21': '',
+                    \'22': '',
+                    \'23': '',
+                    \'24': '',
+                    \'25': '',
+                    \}
+                \},
+            \'workspace_config': {
+                \'python': {'analysis': {'autoImportCompletions': v:false}}
+                \}}
+" }}}
+" asyncomplete.vim {{{
+let g:asyncomplete_popup_delay = 50
+" let g:asyncomplete_min_chars = 1
+let g:asyncomplete_preprocessor = [function('ac#ac#preprocessor')]
+
+inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+inoremap <expr> <cr>    pumvisible() ? asyncomplete#close_popup() : "\<cr>"
+" inoremap <silent><expr> <Tab>
+"             \ pumvisible() ? "\<C-n>" :
+"             \ <SID>check_back_space() ? "\<Tab>" :
+"             \ asyncomplete#force_refresh()
+" inoremap <expr><S-Tab> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+" function! s:check_back_space() abort
+"     let col = col('.') - 1
+"     return !col || getline('.')[col - 1]  =~ '\s'
+" endfunction
+
+" asyncomplete-lsp {{{
+au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#lsp#get_source_options({
+            \ 'name': 'lsp',
+            \ 'allowlist': ['*'],
+            \ 'priority': 9,
+            \ }))
+" }}}
+" asyncomplete-ultisnips {{{
+au User asyncomplete_setup call asyncomplete#register_source(ac#sources#ultisnips#get_source_options({
+            \ 'name': 'ultisnips',
+            \ 'allowlist': ['*'],
+            \ 'priority': 10,
+            \ }))
+" }}}
+" asyncomplete-file {{{
+au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
+            \ 'name': 'file',
+            \ 'allowlist': ['*'],
+            \ 'priority': 10,
+            \ 'completor': function('asyncomplete#sources#file#completor')
+            \ }))
+" }}}
+" asyncomplete-buffer {{{
+au User asyncomplete_setup call asyncomplete#register_source(ac#sources#buffer#get_source_options({
+            \'name': 'buffer',
+            \'allowlist': ['*'],
+            \}))
+" }}}
+" asyncomplete-emoji {{{
+au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#emoji#get_source_options({
+            \ 'name': 'emoji',
+            \ 'allowlist': ['*'],
+            \ 'completor': function('asyncomplete#sources#emoji#completor'),
+            \ }))
+" }}}
+" asyncomplete-look {{{
+au User asyncomplete_setup call asyncomplete#register_source({
+            \ 'name': 'look',
+            \ 'allowlist': ['*'],
+            \ 'completor': function('asyncomplete#sources#look#completor'),
+            \ 'priority': -1,
+            \ })
+" }}}
+" }}}
+" tmux-complete.vim {{{
+let g:tmuxcomplete#asyncomplete_source_options = {
+            \ 'name':      'tmux',
+            \ 'whitelist': ['*'],
+            \ 'config': {
+                \     'splitmode':      'ilines,words',
+                \     'filter_prefix':   1,
+                \     'show_incomplete': 1,
+                \     'sort_candidates': 0,
+                \     'scrollback':      1,
+                \     'truncate':        0
+                \     }
+                \ }
+let g:tmuxcomplete#trigger = ''
+" }}}
+" UltiSnips {{{
+let g:UltiSnipsExpandTrigger = '<c-j>'
+let g:UltiSnipsListSnippets = '<c-l>'
+" }}}
+" vimspector {{{
 let g:vimspector_enable_mappings = 'HUMAN'
 let g:vimspector_install_gadgets = [
             \ 'debugpy',
@@ -294,7 +392,7 @@ let g:repl_program = {
             \ 'vim': 'vim -e',
             \ }
 " }}}
-" vim-quickrun {{{2
+" vim-quickrun {{{
 let g:quickrun_config = {}
 let g:quickrun_config._ = {
             \ 'runner': 'job',
@@ -304,20 +402,20 @@ let g:quickrun_config._ = {
             \ 'outputter/buffer/close_on_empty': 1,
             \ }
 " }}}
-" open-browser.vim {{{2
+" open-browser.vim {{{
 " disable netrw's gx mapping.
 let g:netrw_nogx = 1
 nmap gx <Plug>(openbrowser-smart-search)
 vmap gx <Plug>(openbrowser-smart-search)
 " }}}
-" vim-workspace {{{2
+" vim-workspace {{{
 let g:workspace_session_disable_on_args = 1
 let g:workspace_session_directory = $XDG_CACHE_HOME . '/vim/sessions/'
 " }}}
-" csv.vim {{{2
+" csv.vim {{{
 let g:csv_comment='#'
 " }}}
-" pear-tree {{{2
+" pear-tree {{{
 " Disable dot-repeatable expansion
 let g:pear_tree_repeatable_expand = 0
 " Enable smart pairs
@@ -325,20 +423,20 @@ let g:pear_tree_smart_openers = 1
 let g:pear_tree_smart_closers = 1
 let g:pear_tree_smart_backspace = 1
 " }}}
-" fzf {{{2
+" fzf {{{
 let $FZF_DEFAULT_COMMAND="rg --files --hidden --glob='!^node_modules$' --glob='!.git' --glob='!\.*.swp'"
 let $FZF_DEFAULT_OPTS="--layout=reverse --info=inline"
 let g:fzf_layout = {
             \ 'window': {
-            \ 'width': 0.64,
-            \ 'height': 0.48,
-            \ 'highlight': 'Identifier',
-            \ 'border': 'rounded'
-            \ }
-            \ }
+                \ 'width': 0.64,
+                \ 'height': 0.48,
+                \ 'highlight': 'Identifier',
+                \ 'border': 'rounded'
+                \ }
+                \ }
 let g:fzf_history_dir = '~/.cache/fzf'
 " }}}
-" fzf.vim {{{2
+" fzf.vim {{{
 let g:fzf_command_prefix = 'Fzf'
 
 noremap <silent> <leader>fc
@@ -364,20 +462,20 @@ noremap <silent> <leader>ft
 noremap <silent> <leader>fT
             \ :execute get(g:, 'fzf_command_prefix', '') . 'Tags'<CR>
 " }}}
-" vim-easy-align {{{2
+" vim-easy-align {{{
 xmap ga <Plug>(EasyAlign)
 nmap ga <Plug>(EasyAlign)
 vmap <Enter> <Plug>(EasyAlign)
 " }}}
-" vim-cool {{{2
+" vim-cool {{{
 " Show number of matches in the command-line
 let g:CoolTotalMatches = 1
 " }}}
-" vista.vim {{{2
+" vista.vim {{{
 nnoremap <silent> <leader>] :Vista!!<CR>
 let g:vista_executive_for = {'pandoc': 'markdown'}
 " }}}
-" neoformat {{{2
+" neoformat {{{
 " Enable alignment
 let g:neoformat_basic_format_align = 1
 " Enable tab to spaces conversion
@@ -387,7 +485,7 @@ let g:neoformat_basic_format_trim = 1
 let g:neoformat_enabled_c = ['clangformat', 'uncrustify', 'astyle']
 let g:neoformat_enabled_cpp = ['clangformat', 'uncrustify', 'astyle']
 " }}}
-" lightline {{{2
+" lightline {{{
 let g:lightline = {}
 let g:lightline.colorscheme = 'gruvbox'
 let g:lightline.mode_map = {
@@ -403,18 +501,19 @@ let g:lightline.mode_map = {
             \ "\<C-s>": ' S-B ',
             \ 't':      ' > ',
             \ }
+
 let g:lightline.component_function = {
-            \ 'coc_status': 'coc#status',
+            \ 'lsp_status': 'g:LspStatus',
             \ }
 let g:lightline.active = {
             \ 'left': [['mode', 'paste'],
-            \          ['coc_status', 'readonly', 'filename', 'modified']]
+            \          ['lsp_status', 'readonly', 'filename', 'modified']]
             \ }
 " }}}
-" vim-im-select {{{2
+" vim-im-select {{{
 " let g:im_select_get_im_cmd = ['macism']
 " }}}
-" vim-markdown {{{2
+" vim-markdown {{{
 let g:markdown_fenced_languages = ['bash', 'vim', 'python', 'json', 'tex']
 let g:markdown_conceal_link = 0
 autocmd! FileType markdown set concealcursor=nc conceallevel=2
@@ -423,7 +522,7 @@ autocmd! FileType markdown set concealcursor=nc conceallevel=2
 let g:vimtex_view_general_viewer = 'okular'
 let g:vimtex_view_general_options = '--unique file:@pdf\#src:@line@tex'
 " }}}
-" markdown-preview.nvim {{{2
+" markdown-preview.nvim {{{
 function! g:OpenUrl(url) abort
     " call system('qutebrowser --target private-window -T -C ~/.config/qutebrowser/config.py ' . a:url)
     " silent exec '!qutebrowser --target private-window -T -C ~/.config/qutebrowser/config.py ' . a:url
@@ -433,17 +532,17 @@ let g:mkdp_auto_close = 0
 let g:mkdp_browserfunc = 'g:OpenUrl'
 nmap <leader>p <Plug>MarkdownPreviewToggle
 " }}}
-" python-syntax {{{2
+" python-syntax {{{
 let g:python_highlight_all = 1
 " }}}
-" vim-translator {{{2
+" vim-translator {{{
 let g:translator_history_enable = v:true
 let g:translator_default_engines = ['haici', 'youdao']
 " Display translation in a window
 nmap <silent> <Leader><Space> <Plug>TranslateW
 vmap <silent> <Leader><Space> <Plug>TranslateWV
 " }}}
-" vim-sneak {{{2
+" vim-sneak {{{
 " Disable highlighting for sneak matches
 " highlight link Sneak Normal
 let g:sneak#s_next = 1
@@ -483,7 +582,7 @@ let g:cycle_default_groups = [
 let g:qf_mapping_ack_style = 1
 nmap <leader>q <Plug>(qf_qf_toggle)
 " }}}
-" netrw (builtin) {{{2
+" netrw (builtin) {{{
 " Disable netrw
 " let g:loaded_netrwPlugin = 1
 " let g:netrw_liststyle = 1
@@ -497,13 +596,13 @@ let g:netrw_home = '~/.cache/vim'
 " Preview in vertically split window
 let g:netrw_preview = 1
 " }}}
-" syntax/tex.vim (builtin) {{{2
+" syntax/tex.vim (builtin) {{{
 " Set flavor filetype of .tex file
 let g:tex_flavor = 'tex'
 let g:tex_conceal = 'abmgs'
 " }}}
 " }}}
-" EDITING {{{1
+" EDITING {{{
 " Copy indent from current line when starting a new line
 set autoindent
 " Do smart autoindenting when starting a new line
@@ -535,7 +634,8 @@ augroup tabwidth
     autocmd FileType html,css,scss,javascript,typescript,vue,json,yaml
                 \ setlocal tabstop=2 shiftwidth=2 softtabstop=2
 augroup END
-" APPEARANCE {{{1
+" }}}
+" APPEARANCE {{{
 syntax enable
 " Show the line and column number of the cursor
 set ruler
@@ -568,6 +668,8 @@ set signcolumn=yes
 set guifont=SauceCodePro\ Nerd\ Font
 " [GUI] Hide toolbar
 set guioptions-=T
+" completion menu maximum height
+set pumheight=20
 
 " Setting dark mode
 set background=dark
@@ -598,11 +700,16 @@ endif
 
 highlight! link FoldColumn LineNr
 highlight! link SignColumn LineNr
-highlight link CocErrorSign UserRed
-highlight link CocWarningSign UserYellow
-highlight link CocInfoSign UserBlue
-highlight link CocHintSign UserPurple
-" MAPPINGS {{{1
+
+highlight link LspErrorText UserRed
+highlight link LspWarningText UserYellow
+highlight link LspInformationText UserBlue
+highlight link LspHintText UserPurple
+
+highlight LspErrorHighlight cterm=underline gui=underline
+highlight LspWarningHighlight cterm=underline gui=underline
+" }}}
+" MAPPINGS {{{
 " Personal mapping flavor
 " <leader>d* -> daily life
 " <leader>f* -> fuzzy finder
@@ -622,15 +729,15 @@ cabbrev WQA wqa
 " Zotero {{{
 " Ref: https://retorque.re/zotero-better-bibtex/citing/cayw/
 function! ZoteroCite()
-  let formats = {
-              \ 'markdown': 'formatted-bibliography',
-              \ 'pandoc': 'pandoc&brackets=1',
-              \ 'tex': 'latex',
-              \ }
-  let format = get(formats, &filetype, 'formatted-bibliography')
-  let api_call = 'http://127.0.0.1:23119/better-bibtex/cayw?format='.format
-  let ref = system('curl -s '.shellescape(api_call))
-  return ref
+    let formats = {
+                \ 'markdown': 'formatted-bibliography',
+                \ 'pandoc': 'pandoc&brackets=1',
+                \ 'tex': 'latex',
+                \ }
+    let format = get(formats, &filetype, 'formatted-bibliography')
+    let api_call = 'http://127.0.0.1:23119/better-bibtex/cayw?format='.format
+    let ref = system('curl -s '.shellescape(api_call))
+    return ref
 endfunction
 
 noremap <leader>z "=ZoteroCite()<CR>p
