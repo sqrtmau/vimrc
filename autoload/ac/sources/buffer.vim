@@ -31,7 +31,7 @@ function! ac#sources#buffer#get_source_options(opts)
                 \'menu': '[buffer]',
                 \'max_buffer_size': 5000000,
                 \'clear_cache': v:false,
-                \'match_chars': 'a-zA-Z\u4e00-\u9fff',
+                \'match_chars': 'a-zA-Z\_\-\u4e00-\u9fff',
                 \}, a:opts)
 endfunction
 
