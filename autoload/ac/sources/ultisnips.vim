@@ -18,7 +18,7 @@ function! ac#sources#ultisnips#completor(opt, ctx)
     let l:kw = matchstr(l:typed, '\w\+$')
     let l:kwlen = len(l:kw)
 
-    let l:matches = map(keys(l:snips),'{"word":v:val,"dup":1,"icase":1,"menu":"' . a:opt['marker'] . '"}')
+    let l:matches = map(keys(l:snips),'{"word":v:val,"dup":1,"icase":1,"menu":"' . a:opt['marker'] . '", "info": l:snips[v:val]}')
     let l:startcol = l:col - l:kwlen
 
     call asyncomplete#complete(a:opt['name'], a:ctx, l:startcol, l:matches)

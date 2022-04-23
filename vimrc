@@ -298,6 +298,9 @@ let g:lsp_settings['pyright-langserver']['workspace_config'] = {
 " asyncomplete.vim {{{
 let g:asyncomplete_popup_delay = 50
 " let g:asyncomplete_min_chars = 1
+let g:asyncomplete_auto_completeopt = 0
+set completeopt=menuone,noinsert,noselect,popup
+set completepopup=border:off,highlight:Pmenu
 let g:asyncomplete_preprocessor = [function('ac#ac#preprocessor')]
 
 inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
