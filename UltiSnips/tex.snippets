@@ -1,4 +1,4 @@
-snippet frame "Frame environment" b
+snippet frame "frame environment" b
 \begin{frame}[c]{${1:title}}
     $0
 \end{frame}
@@ -25,10 +25,22 @@ snippet mini2 "side-by-side minipages" b
 \end{minipage}%
 endsnippet
 
-snippet SIr "SIrange"
-\SIrange{$1}{$2}{$3}
+snippet qty "\qty[<opts>]{<num>}{<unit>}" w
+\qty{${1:${VISUAL}}}{${2}}
 endsnippet
 
-snippet includegraphics "includegraphics"
+snippet qtyr "\qtyrange[<opts>]{<num1>}{<num2>}{<unit>}"
+\qtyrange{$1}{$2}{$3}
+endsnippet
+
+snippet ig "includegraphics"
 \includegraphics[width=${1:.8}\linewidth]{$2}
+endsnippet
+
+snippet doc "minimal template"
+\documentclass{${1:ctexart}}
+
+\begin{document}
+${2}
+\end{document}
 endsnippet
