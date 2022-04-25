@@ -167,8 +167,6 @@ Plug 'dhruvasagar/vim-table-mode'
 Plug 'brglng/vim-im-select'
 " True Sublime Text style multiple selections for Vim
 Plug 'mg979/vim-visual-multi'
-" Rainbow Parentheses Improved
-Plug 'luochen1990/rainbow'
 " Asynchronous translating plugin for Vim/Neovim
 Plug 'voldikss/vim-translator'
 Plug 'iamcco/markdown-preview.nvim', {'do': 'cd app && yarn install'}
