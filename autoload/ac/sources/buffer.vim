@@ -1,9 +1,20 @@
 let s:words = {}
+let s:buf_caches = {}
+
+function! ac#sources#buffer#get_source_options(opts)
+    return extend({
+                \'name': 'buffer',
+                \'completor': function('ac#sources#buffer#completor'),
+                \'menu': '[buffer]',
+                \'max_buffer_size': 5000000,
+                \'match_chars': 'a-zA-Z\_\-\u4e00-\u9fff',
+                \}, a:opts)
+endfunction
 
 function! ac#sources#buffer#completor(opt, ctx)
     let l:typed = a:ctx['typed']
 
-    call s:refresh_keyword_incremental(a:opt, l:typed)
+    call s:refresh_words(a:opt, a:ctx)
 
     if empty(s:words)
         return
@@ -22,62 +33,37 @@ function! ac#sources#buffer#completor(opt, ctx)
     call asyncomplete#complete(a:opt['name'], a:ctx, l:startcol, l:matches)
 endfunction
 
-function! ac#sources#buffer#get_source_options(opts)
-    return extend({
-                \'name': 'buffer',
-                \'completor': function('ac#sources#buffer#completor'),
-                \'events': ['VimEnter', 'BufWinEnter'],
-                \'on_event': function('s:on_event'),
-                \'menu': '[buffer]',
-                \'max_buffer_size': 5000000,
-                \'clear_cache': v:false,
-                \'match_chars': 'a-zA-Z\_\-\u4e00-\u9fff',
-                \}, a:opts)
-endfunction
-
-function! s:should_ignore(opt) abort
-    let l:max_buffer_size = a:opt['max_buffer_size']
-
-    if l:max_buffer_size != -1
-        let l:buffer_size = line2byte(line('$') + 1)
-        if l:buffer_size > l:max_buffer_size
-            call asyncomplete#log('asyncomplete#sources#buffer',
-                        \'ignoring buffer autocomplete due to large size',
-                        \expand('%:p'), l:buffer_size)
-            return 1
+function! s:refresh_words(opt, ctx) abort
+    let l:bufs = getbufinfo({'buflisted': 1})
+    for l:buf in l:bufs
+        let l:bufnr = l:buf['bufnr']
+        let l:start = 1
+        let l:end = '$'
+        if l:bufnr == a:ctx['bufnr']
+            let l:start = max([a:ctx['lnum'] - 1000, 1])
+            let l:end = a:ctx['lnum'] + 1000
+        else
+            let l:name = l:buf['name']
+            if getfsize(l:name) > a:opt['max_buffer_size']
+                continue
+            endif
+            let l:ftime = getftime(l:name)
+            if has_key(s:buf_caches, l:bufnr) && l:ftime <= s:buf_caches[l:bufnr]
+                continue
+            endif
+            let s:buf_caches[l:bufnr] = l:ftime
         endif
-    endif
 
-    return 0
-endfunction
-
-function! s:on_event(opt, ctx, event) abort
-    if s:should_ignore(a:opt) | return | endif
-
-    if index(['VimEnter', 'BufWinEnter'], a:event) != -1
-        call s:refresh_keywords(a:opt)
-    endif
-endfunction
-
-function! s:refresh_keywords(opt) abort
-    if a:opt['clear_cache']
-        let s:words = {}
-    endif
-    let l:text = join(getline(1, '$'), "\n")
-    for l:word in split(l:text, '[^' . a:opt['match_chars'] . ']\+')
-        if len(l:word) > 1
-            let s:words[l:word] = 1
-        endif
+        let l:text = join(getbufline(l:bufnr, l:start, l:end), "\n")
+        for l:word in split(l:text, '[^' . a:opt['match_chars'] . ']\+')
+            if len(l:word) > 1
+                let s:words[l:word] = 1
+            endif
+        endfor
     endfor
-    call asyncomplete#log('asyncomplete#buffer', 's:refresh_keywords() complete')
+    let l:cur_wrods = split(a:ctx['typed'], '[^' . a:opt['match_chars'] . ']\+')
+    if !empty(l:cur_wrods)
+        call remove(s:words, l:cur_wrods[-1])
+    endif
 endfunction
 
-function! s:refresh_keyword_incremental(opt, typed) abort
-    let l:words = split(a:typed, '[^' . a:opt['match_chars'] . ']\+')[:-2]
-
-    for l:word in l:words
-        if len(l:word) > 1
-            let s:words[l:word] = 1
-        endif
-    endfor
-endfunction
