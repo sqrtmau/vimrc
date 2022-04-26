@@ -51,7 +51,6 @@ function! s:should_ignore(opt) abort
     return 0
 endfunction
 
-let s:last_ctx = {}
 function! s:on_event(opt, ctx, event) abort
     if s:should_ignore(a:opt) | return | endif
 
