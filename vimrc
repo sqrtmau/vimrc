@@ -170,7 +170,7 @@ Plug 'mg979/vim-visual-multi'
 " Asynchronous translating plugin for Vim/Neovim
 Plug 'voldikss/vim-translator'
 Plug 'iamcco/markdown-preview.nvim', {'do': 'cd app && yarn install'}
-" Polyglot {{{
+" Filetypes {{{
 Plug '~/Documents/projects/1-maintaining/vim-markdown'
 Plug 'cespare/vim-toml'
 Plug 'Glench/Vim-Jinja2-Syntax'
