@@ -93,7 +93,6 @@ Plug 'prabirshrestha/vim-lsp'
 Plug 'mattn/vim-lsp-settings'
 " async completion in pure vim script for vim8 and neovim
 Plug 'prabirshrestha/asyncomplete.vim'
-Plug 'sqrtmau/asyncomplete-lsp.vim'
 Plug 'prabirshrestha/asyncomplete-file.vim'
 Plug 'hiterm/asyncomplete-look'
 Plug 'prabirshrestha/asyncomplete-emoji.vim'
@@ -290,8 +289,11 @@ for s in ['clangd', 'pyright-langserver', 'vim-language-server', 'texlab', 'deno
                 \'completion_item_kinds': s:lsp_completion_item_kinds}}
 endfor
 let g:lsp_settings['pyright-langserver']['workspace_config'] = {
-            \'python': {'analysis': {'autoImportCompletions': v:false}}
-            \}
+            \'python': {'analysis': {
+                \'autoImportCompletions': v:false,
+                \'stubPath': $XDG_CACHE_HOME . '/pyright/typings'
+                \}}
+                \}
 " }}}
 " asyncomplete.vim {{{
 let g:asyncomplete_popup_delay = 50
@@ -316,7 +318,7 @@ inoremap <expr> <cr>    pumvisible() ? asyncomplete#close_popup() : "\<cr>"
 " endfunction
 
 " asyncomplete-lsp {{{
-au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#lsp#get_source_options({
+au User asyncomplete_setup call asyncomplete#register_source(ac#sources#lsp#get_source_options({
             \ 'name': 'lsp',
             \ 'allowlist': ['*'],
             \ 'priority': 9,
