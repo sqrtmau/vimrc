@@ -1,3 +1,6 @@
+let s:start_chars = 'a-zA-Z0-9\_\-\u4e00-\u9fff'
+let s:fname_reserved_chars = '\x00-\x1f\x7e'
+
 function! s:filename_map(prefix, file) abort
     let l:abbr = fnamemodify(a:file, ':t')
     let l:word = a:prefix . l:abbr
@@ -22,7 +25,7 @@ function! ac#sources#file#completor(opt, ctx)
     let l:typed = a:ctx['typed']
     let l:col   = a:ctx['col']
 
-    let l:kw    = matchstr(l:typed, '\(\.\{0,2}\/\|\~\|[a-zA-Z0-9+_-][@a-zZ-Z0-9(){}+_-]\+\/\)\+\([\/@a-zA-Z0-9(){}$ +_\~.''"\x80-\xff-\[\]]\|[^\x20-\x7e]\|\\.\)*$')
+    let l:kw    = matchstr(l:typed, '\(\.\{0,2}\/\|\~\|['. s:start_chars .']\+\/\)\+[^'. s:fname_reserved_chars .']*$')
     let l:kwlen = len(l:kw)
 
     if l:kwlen >= 1
@@ -31,7 +34,7 @@ function! ac#sources#file#completor(opt, ctx)
             let l:pre = l:pre . '/'
         endif
     else
-        let l:words = split(l:typed, '[^a-zA-Z\_\-\u4e00-\u9fff]\+')
+        let l:words = split(l:typed, '[ \t(){}\[\]''"]\+')
         if !empty(l:words)
             let l:kw = l:words[-1]
             let l:kwlen = len(l:kw)
