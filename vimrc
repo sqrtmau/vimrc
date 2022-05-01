@@ -593,7 +593,7 @@ nmap <leader>q <Plug>(qf_qf_toggle)
 " let g:netrw_keepdir = 0
 let g:netrw_list_hide = '\(^\|\s\s\)\zs\.\S\+'
 " let g:netrw_hide = 1
-let g:netrw_home = $XDG_CACHE_HOME . 'vim'
+let g:netrw_home = $XDG_CACHE_HOME . '/vim'
 " Preview in vertically split window
 let g:netrw_preview = 1
 " }}}
