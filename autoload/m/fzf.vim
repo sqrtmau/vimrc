@@ -171,17 +171,27 @@ function! m#fzf#mru(bang)
 endfunction
 
 function! s:mru_source()
-    return extend(
-                \ filter(copy(v:oldfiles),
-                \        "v:val !~ 'fugitive:\\|NERD_tree\\|^/tmp/\\|.git/'"),
-                \ map(filter(range(1, bufnr('$')), 'buflisted(v:val)'), 'bufname(v:val)'))
+    let l:files = copy(v:oldfiles)
+    for l:bufnr in range(1, bufnr('$'), 1)
+        if buflisted(l:bufnr) && l:bufnr != bufnr('%')
+            call insert(l:files, bufname(l:bufnr), 0)
+        endif
+    endfor
+
+    let l:excludes = ['^$', '\w\+://', '^/\(tmp\|run\)', '.git/']
+    call filter(l:files, {val -> val !~ join(l:excludes, '\|')})
+
+    call uniq(l:files, {i1, i2 -> fnamemodify(i1, ':p') !=# fnamemodify(i2, ':p')})
+
+    return l:files
 endfunction
 
 function! s:prepend_icon(candidates)
     let l:result = []
     for l:candidate in a:candidates
-        let l:filename = fnamemodify(l:candidate, ':p:t')
-        let l:icon = WebDevIconsGetFileTypeSymbol(l:filename, isdirectory(l:filename))
+        let l:path = fnamemodify(l:candidate, ':p')
+        let l:filename = fnamemodify(l:path, ':t')
+        let l:icon = WebDevIconsGetFileTypeSymbol(l:filename, isdirectory(l:path))
         call add(l:result, printf('%s %s', l:icon, l:candidate))
     endfor
     return l:result
