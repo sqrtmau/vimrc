@@ -163,7 +163,7 @@ endfunction
 " mru {{{2
 function! m#fzf#mru(bang)
     let opts = fzf#wrap('mru', {
-                \'source': s:prepend_icon(s:mru_source()),
+                \'source': s:mru_source(),
                 \'options': ['--multi', '--no-sort', '--prompt=MRU> '],
                 \}, a:bang)
     let opts['sink*'] = function('s:mru_handler')
@@ -172,29 +172,35 @@ endfunction
 
 function! s:mru_source()
     let l:files = copy(v:oldfiles)
+
     for l:bufnr in range(1, bufnr('$'), 1)
         if buflisted(l:bufnr) && l:bufnr != bufnr('%')
-            call insert(l:files, bufname(l:bufnr), 0)
+            call insert(l:files, fnamemodify(bufname(l:bufnr), ':~'), 0)
         endif
     endfor
 
     let l:excludes = ['^$', '\w\+://', '^/\(tmp\|run\)', '.git/']
-    call filter(l:files, {val -> val !~ join(l:excludes, '\|')})
+    call filter(l:files, {idx, val -> val !~# join(l:excludes, '\|')})
 
-    call uniq(l:files, {i1, i2 -> fnamemodify(i1, ':p') !=# fnamemodify(i2, ':p')})
+    let l:uniq_files_map = {}
+    let l:uniq_files = []
+    for l:idx in range(len(l:files))
+        let l:path = fnamemodify(l:files[l:idx], ':p')
+        if !has_key(l:uniq_files_map, l:path)
+            let l:icon = s:get_file_icon(l:path)
+            call add(l:uniq_files, printf('%s %s', l:icon, l:files[l:idx]))
+            let l:uniq_files_map[l:path] = 1
+        endif
+    endfor
 
-    return l:files
+    return l:uniq_files
 endfunction
 
-function! s:prepend_icon(candidates)
-    let l:result = []
-    for l:candidate in a:candidates
-        let l:path = fnamemodify(l:candidate, ':p')
-        let l:filename = fnamemodify(l:path, ':t')
-        let l:icon = WebDevIconsGetFileTypeSymbol(l:filename, isdirectory(l:path))
-        call add(l:result, printf('%s %s', l:icon, l:candidate))
-    endfor
-    return l:result
+function! s:get_file_icon(path)
+    let l:abspath = fnamemodify(a:path, ':p')
+    let l:filename = fnamemodify(l:abspath, ':t')
+    let l:icon = WebDevIconsGetFileTypeSymbol(l:filename, isdirectory(l:abspath))
+    return l:icon
 endfunction
 
 function! s:mru_handler(lines)
