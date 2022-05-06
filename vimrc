@@ -86,7 +86,7 @@ call mkdir($XDG_DATA_HOME."/vim/spell", 'p', 0700)
 " }}}
 " PLUGINS {{{
 " vim-plug {{{
-call plug#begin($XDG_DATA_HOME.'/vim/plugged')
+call plug#begin($XDG_DATA_HOME . '/vim/plugged')
 " async language server protocol plugin for vim and neovim
 Plug 'prabirshrestha/vim-lsp'
 " auto configurations for Language Server for vim-lsp
@@ -183,9 +183,11 @@ Plug 'fatih/vim-go'
 Plug 'MTDL9/vim-log-highlighting'
 Plug 'octol/vim-cpp-enhanced-highlight'
 " }}}
-" Themes {{{
+" Colorschemes {{{
 " A simplified and optimized Gruvbox colorscheme for Vim
 Plug 'lifepillar/vim-gruvbox8'
+" Gruvbox with Material Palette
+Plug 'sainnhe/gruvbox-material'
 " A dark Vim/Neovim color scheme inspired by Atom's One Dark syntax theme.
 Plug 'joshdick/onedark.vim'
 " Clean & Elegant Color Scheme for Vim, Zsh and Terminal Emulators
@@ -534,10 +536,17 @@ augroup update_lightline_colorscheme
     autocmd ColorScheme * call s:update_lightline_colorscheme(expand('<amatch>'))
 augroup END
 
+let s:lightline_colorschemes_map = {
+            \'gruvbox-material': 'gruvbox_material',
+            \'gruvbox8_hard': 'gruvbox8',
+            \'gruvbox8_soft': 'gruvbox8',
+            \}
+
 function! s:update_lightline_colorscheme(scheme)
-    execute 'runtime autoload/lightline/colorscheme/' . a:scheme . '.vim'
-    if exists('g:lightline#colorscheme#{a:scheme}#palette')
-        let g:lightline.colorscheme = a:scheme
+    let l:scheme = get(s:lightline_colorschemes_map, a:scheme, a:scheme)
+    execute 'runtime autoload/lightline/colorscheme/' . l:scheme . '.vim'
+    if exists('g:lightline#colorscheme#{l:scheme}#palette')
+        let g:lightline.colorscheme = l:scheme
     else
         return
     endif
@@ -712,7 +721,7 @@ set background=dark
 " else
 "     set background=dark
 " endif
-colorscheme everforest
+colorscheme gruvbox-material
 " }}}
 " MAPPINGS {{{
 " Personal mapping flavor
