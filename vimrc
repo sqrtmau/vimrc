@@ -186,8 +186,8 @@ Plug 'octol/vim-cpp-enhanced-highlight'
 " Themes {{{
 " A simplified and optimized Gruvbox colorscheme for Vim
 Plug 'lifepillar/vim-gruvbox8'
-Plug 'rakr/vim-one'
-Plug 'sonph/onehalf', {'rtp': 'vim'}
+" A dark Vim/Neovim color scheme inspired by Atom's One Dark syntax theme.
+Plug 'joshdick/onedark.vim'
 " Clean & Elegant Color Scheme for Vim, Zsh and Terminal Emulators
 Plug 'sainnhe/edge'
 " An arctic, north-bluish clean and elegant Vim theme
@@ -196,10 +196,10 @@ Plug 'arcticicestudio/nord-vim'
 Plug 'cocopon/iceberg.vim'
 " A better color scheme for the late night coder
 Plug 'ajmwagar/vim-deus'
-Plug 'nanotech/jellybeans.vim'
-Plug 'crusoexia/vim-monokai'
+" A Vim colorscheme based on Github's syntax highlighting as of 2018.
 Plug 'cormacrelf/vim-colors-github'
-Plug 'sainnhe/forest-night'
+" Comfortable & Pleasant Color Scheme for Vim
+Plug 'sainnhe/everforest'
 " }}}
 call plug#end()
 " }}}
@@ -222,12 +222,6 @@ nmap <silent> gi <Plug>(lsp-implementation)
 nmap <silent> gr <Plug>(lsp-references)
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 
-augroup MyLspDiagnsotics
-    autocmd!
-    " close diagnostics float preview on insert mode
-    autocmd InsertEnter * call popup_clear()
-augroup END
-
 function! s:show_documentation()
     if (index(['vim','help'], &filetype) >= 0)
         execute 'h '.expand('<cword>')
@@ -236,23 +230,24 @@ function! s:show_documentation()
     endif
 endfunction
 
-function! g:LspStatus()
-    const status = lsp#get_buffer_diagnostics_counts()
-    let msg = ''
-    let num = status['error']
-    let icon = g:lsp_diagnostics_signs_error['text']
-    if  num != 0
-        let msg .= icon . ' ' . num
-    endif
-    let num = status['warning']
-    let icon = g:lsp_diagnostics_signs_warning['text']
-    if status['warning'] != 0
-        if !empty(msg)
-            let msg .= ' '
-        endif
-        let msg .= icon . ' ' . num
-    endif
-    return msg
+augroup clear_preview_popup
+    autocmd!
+    " close diagnostics float preview on insert mode
+    autocmd InsertEnter * call popup_clear()
+augroup END
+
+augroup fix_colors
+    autocmd!
+    autocmd ColorScheme * call s:fix_colors()
+augroup END
+
+function! s:fix_colors() abort
+    highlight LspErrorHighlight cterm=underline gui=underline
+    highlight LspWarningHighlight cterm=underline gui=underline
+    highlight link LspErrorText CocErrorSign
+    highlight link LspWarningText CocWarningSign
+    highlight link LspInformationText CocInfoSign
+    highlight link LspHintText CocHintSign
 endfunction
 " }}}
 " vim-lsp-settings {{{
@@ -439,7 +434,26 @@ let g:fzf_layout = {
                 \ 'border': 'rounded'
                 \ }
                 \ }
-let g:fzf_history_dir = '~/.cache/fzf'
+let g:fzf_history_dir = $XDG_CACHE_HOME . '/fzf'
+
+augroup update_bat_theme
+    autocmd!
+    autocmd ColorScheme * call s:change_bat_theme(expand('<amatch>'))
+augroup END]]
+
+function! s:change_bat_theme(scheme)
+    let l:default = {'light': 'OneHalfLight', 'dark': 'OneHalfDark'}
+    let l:theme_map = {
+                \'gruvbox8': {'light': 'gruvbox-light', 'dark': 'gruvbox-dark'},
+                \'gruvbox8_hard': {'light': 'gruvbox-light', 'dark': 'gruvbox-dark'},
+                \'gruvbox8_soft': {'light': 'gruvbox-light', 'dark': 'gruvbox-dark'},
+                \'nord': {'dark': 'Nord'},
+                \'onedark': {'dark': 'OneHalfDark'},
+                \'github': {'light': 'GitHub'},
+                \}
+    let $BAT_THEME = get(get(l:theme_map, a:scheme, l:default),
+                \&background, l:default[&background])
+endfunction
 " }}}
 " fzf.vim {{{
 let g:fzf_command_prefix = 'Fzf'
@@ -492,7 +506,7 @@ let g:neoformat_enabled_cpp = ['clangformat', 'uncrustify', 'astyle']
 " }}}
 " lightline {{{
 let g:lightline = {}
-let g:lightline.colorscheme = 'gruvbox'
+" let g:lightline.colorscheme = 'default'
 let g:lightline.mode_map = {
             \ 'n':      '  ',
             \ 'i':      ' I ',
@@ -508,12 +522,29 @@ let g:lightline.mode_map = {
             \ }
 
 let g:lightline.component_function = {
-            \ 'lsp_status': 'g:LspStatus',
+            \ 'lsp_status': 'ac#ac#lsp_status',
             \ }
 let g:lightline.active = {
             \ 'left': [['mode', 'paste'],
             \          ['lsp_status', 'readonly', 'filename', 'modified']]
             \ }
+
+augroup update_lightline_colorscheme
+    autocmd!
+    autocmd ColorScheme * call s:update_lightline_colorscheme(expand('<amatch>'))
+augroup END
+
+function! s:update_lightline_colorscheme(scheme)
+    execute 'runtime autoload/lightline/colorscheme/' . a:scheme . '.vim'
+    if exists('g:lightline#colorscheme#{a:scheme}#palette')
+        let g:lightline.colorscheme = a:scheme
+    else
+        return
+    endif
+    call lightline#init()
+    call lightline#colorscheme()
+    call lightline#update()
+endfunction
 " }}}
 " vim-im-select {{{
 " let g:im_select_get_im_cmd = ['macism']
@@ -681,36 +712,7 @@ set background=dark
 " else
 "     set background=dark
 " endif
-colorscheme gruvbox8
-
-if &background ==# 'dark'
-    hi UserRed    guifg=#fb4934 guibg=NONE ctermfg=167 ctermbg=NONE
-    hi UserGreen  guifg=#b8bb26 guibg=NONE ctermfg=142 ctermbg=NONE
-    hi UserYellow guifg=#fabd2f guibg=NONE ctermfg=214 ctermbg=NONE
-    hi UserBlue   guifg=#83a598 guibg=NONE ctermfg=109 ctermbg=NONE
-    hi UserPurple guifg=#d3869b guibg=NONE ctermfg=175 ctermbg=NONE
-    hi UserAqua   guifg=#8ec07c guibg=NONE ctermfg=108 ctermbg=NONE
-    hi UserOrange guifg=#fe8019 guibg=NONE ctermfg=208 ctermbg=NONE
-else
-    hi UserRed    guifg=#9d0006 guibg=NONE ctermfg=88  ctermbg=NONE
-    hi UserGreen  guifg=#79740e guibg=NONE ctermfg=100 ctermbg=NONE
-    hi UserYellow guifg=#b57614 guibg=NONE ctermfg=136 ctermbg=NONE
-    hi UserBlue   guifg=#076678 guibg=NONE ctermfg=24  ctermbg=NONE
-    hi UserPurple guifg=#8f3f71 guibg=NONE ctermfg=96  ctermbg=NONE
-    hi UserAqua   guifg=#427b58 guibg=NONE ctermfg=65  ctermbg=NONE
-    hi UserOrange guifg=#af3a03 guibg=NONE ctermfg=130 ctermbg=NONE
-endif
-
-highlight! link FoldColumn LineNr
-highlight! link SignColumn LineNr
-
-highlight link LspErrorText UserRed
-highlight link LspWarningText UserYellow
-highlight link LspInformationText UserBlue
-highlight link LspHintText UserPurple
-
-highlight LspErrorHighlight cterm=underline gui=underline
-highlight LspWarningHighlight cterm=underline gui=underline
+colorscheme everforest
 " }}}
 " MAPPINGS {{{
 " Personal mapping flavor

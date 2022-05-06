@@ -64,3 +64,22 @@ function! ac#ac#preprocessor(options, matches) abort
 
     call asyncomplete#preprocess_complete(a:options, l:items)
 endfunction
+
+function! ac#ac#lsp_status()
+    const status = lsp#get_buffer_diagnostics_counts()
+    let msg = ''
+    let num = status['error']
+    let icon = g:lsp_diagnostics_signs_error['text']
+    if  num != 0
+        let msg .= icon . ' ' . num
+    endif
+    let num = status['warning']
+    let icon = g:lsp_diagnostics_signs_warning['text']
+    if status['warning'] != 0
+        if !empty(msg)
+            let msg .= ' '
+        endif
+        let msg .= icon . ' ' . num
+    endif
+    return msg
+endfunction
