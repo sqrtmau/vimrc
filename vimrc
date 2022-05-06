@@ -404,6 +404,8 @@ let g:quickrun_config._ = {
             \ 'outputter/buffer/append': 0,
             \ 'outputter/buffer/close_on_empty': 1,
             \ }
+nmap <leader>r <Plug>(quickrun)
+vmap <leader>r <Plug>(quickrun)
 " }}}
 " open-browser.vim {{{
 " disable netrw's gx mapping.
