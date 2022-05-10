@@ -30,6 +30,6 @@ call s:defs([
 call m#fzf#register_source({'name': 'Mru', 'desc': 'Most recently used files'})
 call m#fzf#register_source({'name': 'Yank', 'desc': 'Yank history'})
 
-noremap <silent> <leader>fs :execute g:fzf_command_prefix . 'Sources'<CR>
-noremap <silent> <leader>fm :execute g:fzf_command_prefix . 'Mru'<CR>
-noremap <silent> <leader>fy :execute g:fzf_command_prefix . 'Yank'<CR>
+" noremap <silent> <leader>fs :execute g:fzf_command_prefix . 'Sources'<CR>
+" noremap <silent> <leader>fm :execute g:fzf_command_prefix . 'Mru'<CR>
+" noremap <silent> <leader>fy :execute g:fzf_command_prefix . 'Yank'<CR>

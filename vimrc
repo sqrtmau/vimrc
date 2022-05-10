@@ -93,7 +93,6 @@ Plug 'prabirshrestha/vim-lsp'
 Plug 'mattn/vim-lsp-settings'
 " async completion in pure vim script for vim8 and neovim
 Plug 'prabirshrestha/asyncomplete.vim'
-Plug 'prabirshrestha/asyncomplete-file.vim'
 Plug 'hiterm/asyncomplete-look'
 Plug 'prabirshrestha/asyncomplete-emoji.vim'
 Plug 'prabirshrestha/async.vim'
@@ -116,6 +115,7 @@ Plug 'brooth/far.vim'
 " A command-line fuzzy finder
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
+Plug $HOME . '/Documents/projects/repos/vim-fly'
 " A light and configurable statusline/tabline plugin for Vim
 Plug 'itchyny/lightline.vim'
 " A (Neo)vim plugin for formatting code.
@@ -430,8 +430,8 @@ let $FZF_DEFAULT_COMMAND="rg --files --hidden --glob='!^node_modules$' --glob='!
 let $FZF_DEFAULT_OPTS="--layout=reverse --info=inline"
 let g:fzf_layout = {
             \ 'window': {
-                \ 'width': 0.64,
-                \ 'height': 0.48,
+                \ 'width': 0.48,
+                \ 'height': 0.64,
                 \ 'highlight': 'Identifier',
                 \ 'border': 'rounded'
                 \ }
@@ -446,6 +446,7 @@ augroup END]]
 function! s:change_bat_theme(scheme)
     let l:default = {'light': 'OneHalfLight', 'dark': 'OneHalfDark'}
     let l:theme_map = {
+                \'gruvbox-material': {'light': 'gruvbox-light', 'dark': 'gruvbox-dark'},
                 \'gruvbox8': {'light': 'gruvbox-light', 'dark': 'gruvbox-dark'},
                 \'gruvbox8_hard': {'light': 'gruvbox-light', 'dark': 'gruvbox-dark'},
                 \'gruvbox8_soft': {'light': 'gruvbox-light', 'dark': 'gruvbox-dark'},
@@ -482,6 +483,20 @@ noremap <silent> <leader>ft
             \ :execute get(g:, 'fzf_command_prefix', '') . 'BTags'<CR>
 noremap <silent> <leader>fT
             \ :execute get(g:, 'fzf_command_prefix', '') . 'Tags'<CR>
+" }}}
+" vim-fly {{{
+noremap <silent> <leader>fb :Fly buffers<CR>
+noremap <silent> <leader>ff :Fly files<CR>
+noremap <silent> <leader>fh :Fly help<CR>
+noremap <silent> <leader>fs :Fly sources<CR>
+noremap <silent> <leader>fm :Fly mru<CR>
+noremap <silent> <leader>fM :Fly maps<CR>
+noremap <silent> <leader>fl :Fly blines<CR>
+noremap <silent> <leader>fL :Fly lines<CR>
+noremap <silent> <leader>fg :Fly grep<CR>
+noremap <silent> <leader>fc :Fly commands<CR>
+noremap <silent> <leader>f/ :Fly shist<CR>
+noremap <silent> <leader>fy :Fly yanks<CR>
 " }}}
 " vim-easy-align {{{
 xmap ga <Plug>(EasyAlign)
