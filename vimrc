@@ -93,7 +93,6 @@ Plug 'prabirshrestha/vim-lsp'
 Plug 'mattn/vim-lsp-settings'
 " async completion in pure vim script for vim8 and neovim
 Plug 'prabirshrestha/asyncomplete.vim'
-Plug 'prabirshrestha/asyncomplete-file.vim'
 Plug 'hiterm/asyncomplete-look'
 Plug 'prabirshrestha/asyncomplete-emoji.vim'
 Plug 'prabirshrestha/async.vim'
@@ -446,6 +445,7 @@ augroup END]]
 function! s:change_bat_theme(scheme)
     let l:default = {'light': 'OneHalfLight', 'dark': 'OneHalfDark'}
     let l:theme_map = {
+                \'gruvbox-material': {'light': 'gruvbox-light', 'dark': 'gruvbox-dark'},
                 \'gruvbox8': {'light': 'gruvbox-light', 'dark': 'gruvbox-dark'},
                 \'gruvbox8_hard': {'light': 'gruvbox-light', 'dark': 'gruvbox-dark'},
                 \'gruvbox8_soft': {'light': 'gruvbox-light', 'dark': 'gruvbox-dark'},
