@@ -731,7 +731,7 @@ set list
 " Draw the signcolumn
 set signcolumn=yes
 " [GUI] Fonts
-set guifont=SauceCodePro\ Nerd\ Font
+set guifont=SauceCodePro\ Nerd\ Font\ 11
 " [GUI] Hide toolbar
 set guioptions-=T
 " completion menu maximum height
