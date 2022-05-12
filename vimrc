@@ -485,10 +485,17 @@ noremap <silent> <leader>fT
             \ :execute get(g:, 'fzf_command_prefix', '') . 'Tags'<CR>
 " }}}
 " vim-fly {{{
+augroup udpate_fly_colors
+    autocmd!
+    autocmd ColorScheme * let g:fly_colors = get(g:, 'fzf_colors', {})
+augroup END
+
+let g:fly_history_dir = $XDG_CACHE_HOME . '/vim-fly'
 noremap <silent> <leader>fb :Fly buffers<CR>
 noremap <silent> <leader>ff :Fly files<CR>
 noremap <silent> <leader>fh :Fly help<CR>
 noremap <silent> <leader>fs :Fly sources<CR>
+noremap <silent> <leader>fr :Fly resume<CR>
 noremap <silent> <leader>fm :Fly mru<CR>
 noremap <silent> <leader>fM :Fly maps<CR>
 noremap <silent> <leader>fl :Fly blines<CR>
