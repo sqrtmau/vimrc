@@ -578,7 +578,8 @@ function! s:update_lightline_colorscheme(scheme)
 endfunction
 " }}}
 " vim-im-select {{{
-" let g:im_select_get_im_cmd = ['macism']
+" KDE auto switches the IM for apps, disable it
+let g:im_select_enable_focus_events = 0
 " }}}
 " vim-markdown {{{
 let g:markdown_fenced_languages = ['bash', 'vim', 'python', 'json', 'tex']
