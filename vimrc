@@ -94,7 +94,7 @@ Plug 'mattn/vim-lsp-settings'
 " async completion in pure vim script for vim8 and neovim
 Plug 'prabirshrestha/asyncomplete.vim'
 Plug 'hiterm/asyncomplete-look'
-Plug 'prabirshrestha/asyncomplete-emoji.vim'
+" Plug 'prabirshrestha/asyncomplete-emoji.vim'
 Plug 'prabirshrestha/async.vim'
 Plug 'wellle/tmux-complete.vim'
 Plug 'sillybun/vim-repl'
@@ -121,7 +121,6 @@ Plug 'igankevich/mesonic'
 Plug 'brooth/far.vim'
 " A command-line fuzzy finder
 Plug 'junegunn/fzf'
-Plug 'junegunn/fzf.vim'
 Plug $HOME . '/Documents/projects/repos/vim-fly'
 " A light and configurable statusline/tabline plugin for Vim
 Plug 'itchyny/lightline.vim'
@@ -300,7 +299,7 @@ let g:lsp_settings['pyright-langserver']['workspace_config'] = {
                 \}
 " }}}
 " asyncomplete.vim {{{
-let g:asyncomplete_popup_delay = 50
+let g:asyncomplete_popup_delay = 200
 " let g:asyncomplete_min_chars = 1
 let g:asyncomplete_auto_completeopt = 0
 set completeopt=menuone,noinsert,noselect,popup
@@ -347,13 +346,13 @@ au User asyncomplete_setup call asyncomplete#register_source(ac#sources#buffer#g
             \'allowlist': ['*'],
             \}))
 " }}}
-" asyncomplete-emoji {{{
-au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#emoji#get_source_options({
-            \ 'name': 'emoji',
-            \ 'allowlist': ['*'],
-            \ 'completor': function('asyncomplete#sources#emoji#completor'),
-            \ }))
-" }}}
+" " asyncomplete-emoji {{{
+" au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#emoji#get_source_options({
+"             \ 'name': 'emoji',
+"             \ 'allowlist': ['*'],
+"             \ 'completor': function('asyncomplete#sources#emoji#completor'),
+"             \ }))
+" " }}}
 " asyncomplete-look {{{
 au User asyncomplete_setup call asyncomplete#register_source({
             \ 'name': 'look',
@@ -385,9 +384,10 @@ let g:UltiSnipsListSnippets = '<c-l>'
 " fern.vim {{{
 let g:fern#renderer = "nerdfont"
 let g:fern#hide_cursor = 1
-noremap <silent> <leader>e :Fern . -drawer -toggle<CR>
-noremap <silent> <leader>E :Fern . -drawer -toggle -reveal=%<CR>
+noremap <silent> <leader>e :Fern . -drawer -toggle -reveal=%<CR>
 function! s:init_fern() abort
+    set nonumber
+    set signcolumn=no
     nmap <buffer> b :Fern bookmark:///<CR>
 endfunction
 
@@ -395,6 +395,9 @@ augroup my_fern
     autocmd! *
     autocmd FileType fern call s:init_fern()
 augroup END
+" fern-bookmark.vim {{{
+let g:fern#scheme#bookmark#store#file = $XDG_CACHE_HOME . '/fern-bookmark.json'
+" }}}
 " }}}
 " vimspector {{{
 let g:vimspector_enable_mappings = 'HUMAN'
@@ -478,32 +481,6 @@ function! s:change_bat_theme(scheme)
     let $BAT_THEME = get(get(l:theme_map, a:scheme, l:default),
                 \&background, l:default[&background])
 endfunction
-" }}}
-" fzf.vim {{{
-let g:fzf_command_prefix = 'Fzf'
-
-noremap <silent> <leader>fc
-            \ :execute get(g:, 'fzf_command_prefix', '') . 'Commands'<CR>
-noremap <silent> <leader>fb
-            \ :execute get(g:, 'fzf_command_prefix', '') . 'Buffers'<CR>
-noremap <silent> <leader>ff
-            \ :execute get(g:, 'fzf_command_prefix', '') . 'Files'<CR>
-noremap <silent> <leader>fF
-            \ :execute get(g:, 'fzf_command_prefix', '') . 'GFiles'<CR>
-noremap <silent> <leader>fg
-            \ :execute get(g:, 'fzf_command_prefix', '') . 'Rg'<CR>
-noremap <silent> <leader>fh
-            \ :execute get(g:, 'fzf_command_prefix', '') . 'Helptags'<CR>
-noremap <silent> <leader>fl
-            \ :execute get(g:, 'fzf_command_prefix', '') . 'BLines'<CR>
-noremap <silent> <leader>fL
-            \ :execute get(g:, 'fzf_command_prefix', '') . 'Lines'<CR>
-noremap <silent> <leader>fM
-            \ :execute get(g:, 'fzf_command_prefix', '') . 'Maps'<CR>
-noremap <silent> <leader>ft
-            \ :execute get(g:, 'fzf_command_prefix', '') . 'BTags'<CR>
-noremap <silent> <leader>fT
-            \ :execute get(g:, 'fzf_command_prefix', '') . 'Tags'<CR>
 " }}}
 " vim-fly {{{
 augroup udpate_fly_colors
