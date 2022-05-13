@@ -176,7 +176,7 @@ Plug 'mg979/vim-visual-multi'
 Plug 'voldikss/vim-translator'
 Plug 'iamcco/markdown-preview.nvim', {'do': 'cd app && yarn install'}
 " Filetypes {{{
-Plug '~/Documents/projects/1-maintaining/vim-markdown'
+Plug $HOME . '/Documents/projects/1-maintaining/vim-markdown'
 Plug 'cespare/vim-toml'
 Plug 'Glench/Vim-Jinja2-Syntax'
 Plug 'vim-python/python-syntax'
@@ -433,10 +433,6 @@ vmap <leader>r <Plug>(quickrun)
 let g:netrw_nogx = 1
 nmap gx <Plug>(openbrowser-smart-search)
 vmap gx <Plug>(openbrowser-smart-search)
-" }}}
-" vim-workspace {{{
-let g:workspace_session_disable_on_args = 1
-let g:workspace_session_directory = $XDG_CACHE_HOME . '/vim/sessions/'
 " }}}
 " csv.vim {{{
 let g:csv_comment='#'
