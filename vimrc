@@ -106,7 +106,14 @@ Plug 'thinca/vim-quickrun'
 Plug 'tyru/open-browser.vim'
 Plug 'puremourning/vimspector'
 Plug 'Shougo/neoyank.vim'
-Plug 'tpope/vim-vinegar'
+" General purpose asynchronous tree viewer written in Pure Vim script
+Plug 'lambdalisue/fern.vim'
+Plug 'lambdalisue/fern-hijack.vim'
+Plug 'lambdalisue/fern-git-status.vim'
+Plug 'lambdalisue/nerdfont.vim'
+Plug 'lambdalisue/fern-renderer-nerdfont.vim'
+Plug 'lambdalisue/fern-mapping-project-top.vim'
+Plug 'lambdalisue/fern-bookmark.vim'
 " Tame the quickfix window
 Plug 'romainl/vim-qf'
 Plug 'igankevich/mesonic'
@@ -374,6 +381,20 @@ let g:tmuxcomplete#trigger = ''
 " UltiSnips {{{
 let g:UltiSnipsExpandTrigger = '<c-j>'
 let g:UltiSnipsListSnippets = '<c-l>'
+" }}}
+" fern.vim {{{
+let g:fern#renderer = "nerdfont"
+let g:fern#hide_cursor = 1
+noremap <silent> <leader>e :Fern . -drawer -toggle<CR>
+noremap <silent> <leader>E :Fern . -drawer -toggle -reveal=%<CR>
+function! s:init_fern() abort
+    nmap <buffer> b :Fern bookmark:///<CR>
+endfunction
+
+augroup my_fern
+    autocmd! *
+    autocmd FileType fern call s:init_fern()
+augroup END
 " }}}
 " vimspector {{{
 let g:vimspector_enable_mappings = 'HUMAN'
