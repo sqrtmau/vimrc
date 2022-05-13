@@ -94,7 +94,7 @@ Plug 'mattn/vim-lsp-settings'
 " async completion in pure vim script for vim8 and neovim
 Plug 'prabirshrestha/asyncomplete.vim'
 Plug 'hiterm/asyncomplete-look'
-Plug 'prabirshrestha/asyncomplete-emoji.vim'
+" Plug 'prabirshrestha/asyncomplete-emoji.vim'
 Plug 'prabirshrestha/async.vim'
 Plug 'wellle/tmux-complete.vim'
 Plug 'sillybun/vim-repl'
@@ -106,7 +106,14 @@ Plug 'thinca/vim-quickrun'
 Plug 'tyru/open-browser.vim'
 Plug 'puremourning/vimspector'
 Plug 'Shougo/neoyank.vim'
-Plug 'tpope/vim-vinegar'
+" General purpose asynchronous tree viewer written in Pure Vim script
+Plug 'lambdalisue/fern.vim'
+Plug 'lambdalisue/fern-hijack.vim'
+Plug 'lambdalisue/fern-git-status.vim'
+Plug 'lambdalisue/nerdfont.vim'
+Plug 'lambdalisue/fern-renderer-nerdfont.vim'
+Plug 'lambdalisue/fern-mapping-project-top.vim'
+Plug 'lambdalisue/fern-bookmark.vim'
 " Tame the quickfix window
 Plug 'romainl/vim-qf'
 Plug 'igankevich/mesonic'
@@ -114,7 +121,7 @@ Plug 'igankevich/mesonic'
 Plug 'brooth/far.vim'
 " A command-line fuzzy finder
 Plug 'junegunn/fzf'
-Plug 'junegunn/fzf.vim'
+Plug $HOME . '/Documents/projects/repos/vim-fly'
 " A light and configurable statusline/tabline plugin for Vim
 Plug 'itchyny/lightline.vim'
 " A (Neo)vim plugin for formatting code.
@@ -292,7 +299,7 @@ let g:lsp_settings['pyright-langserver']['workspace_config'] = {
                 \}
 " }}}
 " asyncomplete.vim {{{
-let g:asyncomplete_popup_delay = 50
+let g:asyncomplete_popup_delay = 200
 " let g:asyncomplete_min_chars = 1
 let g:asyncomplete_auto_completeopt = 0
 set completeopt=menuone,noinsert,noselect,popup
@@ -339,13 +346,13 @@ au User asyncomplete_setup call asyncomplete#register_source(ac#sources#buffer#g
             \'allowlist': ['*'],
             \}))
 " }}}
-" asyncomplete-emoji {{{
-au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#emoji#get_source_options({
-            \ 'name': 'emoji',
-            \ 'allowlist': ['*'],
-            \ 'completor': function('asyncomplete#sources#emoji#completor'),
-            \ }))
-" }}}
+" " asyncomplete-emoji {{{
+" au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#emoji#get_source_options({
+"             \ 'name': 'emoji',
+"             \ 'allowlist': ['*'],
+"             \ 'completor': function('asyncomplete#sources#emoji#completor'),
+"             \ }))
+" " }}}
 " asyncomplete-look {{{
 au User asyncomplete_setup call asyncomplete#register_source({
             \ 'name': 'look',
@@ -373,6 +380,24 @@ let g:tmuxcomplete#trigger = ''
 " UltiSnips {{{
 let g:UltiSnipsExpandTrigger = '<c-j>'
 let g:UltiSnipsListSnippets = '<c-l>'
+" }}}
+" fern.vim {{{
+let g:fern#renderer = "nerdfont"
+let g:fern#hide_cursor = 1
+noremap <silent> <leader>e :Fern . -drawer -toggle -reveal=%<CR>
+function! s:init_fern() abort
+    set nonumber
+    set signcolumn=no
+    nmap <buffer> b :Fern bookmark:///<CR>
+endfunction
+
+augroup my_fern
+    autocmd! *
+    autocmd FileType fern call s:init_fern()
+augroup END
+" fern-bookmark.vim {{{
+let g:fern#scheme#bookmark#store#file = $XDG_CACHE_HOME . '/fern-bookmark.json'
+" }}}
 " }}}
 " vimspector {{{
 let g:vimspector_enable_mappings = 'HUMAN'
@@ -429,8 +454,8 @@ let $FZF_DEFAULT_COMMAND="rg --files --hidden --glob='!^node_modules$' --glob='!
 let $FZF_DEFAULT_OPTS="--layout=reverse --info=inline"
 let g:fzf_layout = {
             \ 'window': {
-                \ 'width': 0.64,
-                \ 'height': 0.48,
+                \ 'width': 0.48,
+                \ 'height': 0.64,
                 \ 'highlight': 'Identifier',
                 \ 'border': 'rounded'
                 \ }
@@ -457,31 +482,26 @@ function! s:change_bat_theme(scheme)
                 \&background, l:default[&background])
 endfunction
 " }}}
-" fzf.vim {{{
-let g:fzf_command_prefix = 'Fzf'
+" vim-fly {{{
+augroup udpate_fly_colors
+    autocmd!
+    autocmd ColorScheme * let g:fly_colors = get(g:, 'fzf_colors', {})
+augroup END
 
-noremap <silent> <leader>fc
-            \ :execute get(g:, 'fzf_command_prefix', '') . 'Commands'<CR>
-noremap <silent> <leader>fb
-            \ :execute get(g:, 'fzf_command_prefix', '') . 'Buffers'<CR>
-noremap <silent> <leader>ff
-            \ :execute get(g:, 'fzf_command_prefix', '') . 'Files'<CR>
-noremap <silent> <leader>fF
-            \ :execute get(g:, 'fzf_command_prefix', '') . 'GFiles'<CR>
-noremap <silent> <leader>fg
-            \ :execute get(g:, 'fzf_command_prefix', '') . 'Rg'<CR>
-noremap <silent> <leader>fh
-            \ :execute get(g:, 'fzf_command_prefix', '') . 'Helptags'<CR>
-noremap <silent> <leader>fl
-            \ :execute get(g:, 'fzf_command_prefix', '') . 'BLines'<CR>
-noremap <silent> <leader>fL
-            \ :execute get(g:, 'fzf_command_prefix', '') . 'Lines'<CR>
-noremap <silent> <leader>fM
-            \ :execute get(g:, 'fzf_command_prefix', '') . 'Maps'<CR>
-noremap <silent> <leader>ft
-            \ :execute get(g:, 'fzf_command_prefix', '') . 'BTags'<CR>
-noremap <silent> <leader>fT
-            \ :execute get(g:, 'fzf_command_prefix', '') . 'Tags'<CR>
+let g:fly_history_dir = $XDG_CACHE_HOME . '/vim-fly'
+noremap <silent> <leader>fb :Fly buffers<CR>
+noremap <silent> <leader>ff :Fly files<CR>
+noremap <silent> <leader>fh :Fly help<CR>
+noremap <silent> <leader>fs :Fly sources<CR>
+noremap <silent> <leader>fr :Fly resume<CR>
+noremap <silent> <leader>fm :Fly mru<CR>
+noremap <silent> <leader>fM :Fly maps<CR>
+noremap <silent> <leader>fl :Fly blines<CR>
+noremap <silent> <leader>fL :Fly lines<CR>
+noremap <silent> <leader>fg :Fly grep<CR>
+noremap <silent> <leader>fc :Fly commands<CR>
+noremap <silent> <leader>f/ :Fly shist<CR>
+noremap <silent> <leader>fy :Fly yanks<CR>
 " }}}
 " vim-easy-align {{{
 xmap ga <Plug>(EasyAlign)
@@ -556,7 +576,8 @@ function! s:update_lightline_colorscheme(scheme)
 endfunction
 " }}}
 " vim-im-select {{{
-" let g:im_select_get_im_cmd = ['macism']
+" KDE auto switches the IM for apps, disable it
+let g:im_select_enable_focus_events = 0
 " }}}
 " vim-markdown {{{
 let g:markdown_fenced_languages = ['bash', 'vim', 'python', 'json', 'tex']
@@ -708,7 +729,7 @@ set list
 " Draw the signcolumn
 set signcolumn=yes
 " [GUI] Fonts
-set guifont=SauceCodePro\ Nerd\ Font
+set guifont=SauceCodePro\ Nerd\ Font\ 11
 " [GUI] Hide toolbar
 set guioptions-=T
 " completion menu maximum height
