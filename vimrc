@@ -176,7 +176,7 @@ Plug 'mg979/vim-visual-multi'
 Plug 'voldikss/vim-translator'
 Plug 'iamcco/markdown-preview.nvim', {'do': 'cd app && yarn install'}
 " Filetypes {{{
-Plug $HOME . '/Documents/projects/1-maintaining/vim-markdown'
+Plug $HOME . '/Documents/projects/repos/vim-markdown'
 Plug 'cespare/vim-toml'
 Plug 'Glench/Vim-Jinja2-Syntax'
 Plug 'vim-python/python-syntax'
@@ -448,15 +448,15 @@ let g:pear_tree_smart_backspace = 1
 " fzf {{{
 let $FZF_DEFAULT_COMMAND="rg --files --hidden --glob='!^node_modules$' --glob='!.git' --glob='!\.*.swp'"
 let $FZF_DEFAULT_OPTS="--layout=reverse --info=inline"
-let g:fzf_layout = {
-            \ 'window': {
-                \ 'width': 0.48,
-                \ 'height': 0.64,
-                \ 'highlight': 'Identifier',
-                \ 'border': 'rounded'
-                \ }
-                \ }
-let g:fzf_history_dir = $XDG_CACHE_HOME . '/fzf'
+" let g:fzf_layout = {
+"             \ 'window': {
+"                 \ 'width': 0.48,
+"                 \ 'height': 0.64,
+"                 \ 'highlight': 'Identifier',
+"                 \ 'border': 'rounded'
+"                 \ }
+"                 \ }
+" let g:fzf_history_dir = $XDG_CACHE_HOME . '/fzf'
 
 augroup update_bat_theme
     autocmd!
@@ -526,7 +526,7 @@ let g:neoformat_enabled_cpp = ['clangformat', 'uncrustify', 'astyle']
 let g:lightline = {}
 " let g:lightline.colorscheme = 'default'
 let g:lightline.mode_map = {
-            \ 'n':      '  ',
+            \ 'n':      ' N ',
             \ 'i':      ' I ',
             \ 'R':      ' R ',
             \ 'v':      ' V ',
