@@ -91,12 +91,20 @@ call plug#begin($XDG_DATA_HOME . '/vim/plugged')
 Plug 'prabirshrestha/vim-lsp'
 " auto configurations for Language Server for vim-lsp
 Plug 'mattn/vim-lsp-settings'
-" async completion in pure vim script for vim8 and neovim
-Plug 'prabirshrestha/asyncomplete.vim'
-Plug 'hiterm/asyncomplete-look'
-" Plug 'prabirshrestha/asyncomplete-emoji.vim'
-Plug 'prabirshrestha/async.vim'
-Plug 'wellle/tmux-complete.vim'
+" Dark deno-powered completion framework for neovim/Vim8
+Plug 'Shougo/ddc.vim'
+" ddc stuffs {{{
+Plug 'vim-denops/denops.vim'
+Plug 'Shougo/ddc-matcher_head'
+Plug 'Shougo/ddc-sorter_rank'
+Plug 'Shougo/ddc-around'
+Plug 'shun/ddc-vim-lsp'
+Plug 'matsui54/ddc-ultisnips'
+Plug 'delphinus/ddc-tmux'
+Plug 'matsui54/ddc-buffer'
+Plug 'LumaKernel/ddc-file'
+Plug 'matsui54/ddc-dictionary'
+" }}}
 Plug 'sillybun/vim-repl'
 " use CTRL-A/CTRL-X to increment dates, times, and more
 Plug 'tpope/vim-speeddating'
@@ -298,84 +306,56 @@ let g:lsp_settings['pyright-langserver']['workspace_config'] = {
                 \}}
                 \}
 " }}}
-" asyncomplete.vim {{{
-let g:asyncomplete_popup_delay = 50
-" let g:asyncomplete_min_chars = 1
-let g:asyncomplete_auto_completeopt = 0
-set completeopt=menuone,noinsert,noselect,popup
-set completepopup=border:off,highlight:Pmenu
-let g:asyncomplete_preprocessor = [function('ac#ac#preprocessor')]
+" ddc.vim {{{
+call ddc#custom#patch_global('sources', [
+            \'file',
+            \'vim-lsp',
+            \'ultisnips',
+            \'around',
+            \'buffer',
+            \'tmux',
+            \'dictionary',
+            \])
+call ddc#custom#patch_global('sourceOptions', {
+            \'_': {'matchers': ['matcher_head'], 'sorters': ['sorter_rank']},
+            \'ultisnips': {'mark': 'US'},
+            \'around': {'mark': 'A'},
+            \'vim-lsp': {'mark': 'lsp'},
+            \'tmux': {'mark': 'tmux'},
+            \'buffer': {'mark': 'B'},
+            \'dictionary': {'mark': 'D'},
+            \'file': {
+                \'mark': 'F',
+                \'isVolatile': v:true,
+                \'forceCompletionPattern': '\S/\S*',
+                \}
+            \})
+call ddc#custom#patch_global('sourceParams', {
+            \'around': {'maxSize': 500},
+            \'buffer': {
+                \'requireSameFiletype': v:false,
+                \'limitBytes': 5000000,
+                \'fromAltBuf': v:true,
+                \'forceCollect': v:true,
+                \},
+            \'dictionary': {
+                \'dictPaths': ['/usr/share/dict/words'],
+                \'smartCase': v:true,
+                \'showMenu': v:false,
+                \},
+            \})
 
-inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-inoremap <expr> <cr>    pumvisible() ? asyncomplete#close_popup() : "\<cr>"
-" inoremap <silent><expr> <Tab>
-"             \ pumvisible() ? "\<C-n>" :
-"             \ <SID>check_back_space() ? "\<Tab>" :
-"             \ asyncomplete#force_refresh()
-" inoremap <expr><S-Tab> pumvisible() ? "\<C-p>" : "\<C-h>"
+" <TAB>: completion.
+inoremap <silent><expr> <TAB>
+\ ddc#map#pum_visible() ? '<C-n>' :
+\ (col('.') <= 1 <Bar><Bar> getline('.')[col('.') - 2] =~# '\s') ?
+\ '<TAB>' : ddc#map#manual_complete()
 
-" function! s:check_back_space() abort
-"     let col = col('.') - 1
-"     return !col || getline('.')[col - 1]  =~ '\s'
-" endfunction
+" <S-TAB>: completion back.
+inoremap <expr><S-TAB>  ddc#map#pum_visible() ? '<C-p>' : '<C-h>'
 
-" asyncomplete-lsp {{{
-au User asyncomplete_setup call asyncomplete#register_source(ac#sources#lsp#get_source_options({
-            \ 'name': 'lsp',
-            \ 'allowlist': ['*'],
-            \ 'priority': 9,
-            \ }))
-" }}}
-" asyncomplete-ultisnips {{{
-au User asyncomplete_setup call asyncomplete#register_source(ac#sources#ultisnips#get_source_options({
-            \ 'name': 'ultisnips',
-            \ 'allowlist': ['*'],
-            \ 'priority': 10,
-            \ }))
-" }}}
-" asyncomplete-file {{{
-au User asyncomplete_setup call asyncomplete#register_source(ac#sources#file#get_source_options({
-            \ 'name': 'file',
-            \ 'priority': 10
-            \ }))
-" }}}
-" asyncomplete-buffer {{{
-au User asyncomplete_setup call asyncomplete#register_source(ac#sources#buffer#get_source_options({
-            \'name': 'buffer',
-            \'allowlist': ['*'],
-            \}))
-" }}}
-" " asyncomplete-emoji {{{
-" au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#emoji#get_source_options({
-"             \ 'name': 'emoji',
-"             \ 'allowlist': ['*'],
-"             \ 'completor': function('asyncomplete#sources#emoji#completor'),
-"             \ }))
-" " }}}
-" asyncomplete-look {{{
-au User asyncomplete_setup call asyncomplete#register_source({
-            \ 'name': 'look',
-            \ 'allowlist': ['*'],
-            \ 'completor': function('asyncomplete#sources#look#completor'),
-            \ 'priority': -1,
-            \ })
-" }}}
-" }}}
-" tmux-complete.vim {{{
-let g:tmuxcomplete#asyncomplete_source_options = {
-            \ 'name':      'tmux',
-            \ 'whitelist': ['*'],
-            \ 'config': {
-                \     'splitmode':      'ilines,words',
-                \     'filter_prefix':   1,
-                \     'show_incomplete': 1,
-                \     'sort_candidates': 0,
-                \     'scrollback':      1,
-                \     'truncate':        0
-                \     }
-                \ }
-let g:tmuxcomplete#trigger = ''
+" Use ddc.
+call ddc#enable()
 " }}}
 " UltiSnips {{{
 let g:UltiSnipsExpandTrigger = '<c-j>'
@@ -540,7 +520,7 @@ let g:lightline.mode_map = {
             \ }
 
 let g:lightline.component_function = {
-            \ 'lsp_status': 'ac#ac#lsp_status',
+            \ 'lsp_status': 'm#util#lsp_status',
             \ }
 let g:lightline.active = {
             \ 'left': [['mode', 'paste'],
