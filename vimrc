@@ -97,6 +97,7 @@ Plug 'Shougo/ddc.vim'
 Plug 'vim-denops/denops.vim'
 Plug 'Shougo/ddc-matcher_head'
 Plug 'Shougo/ddc-sorter_rank'
+Plug 'tani/ddc-fuzzy'
 Plug 'Shougo/ddc-around'
 Plug 'shun/ddc-vim-lsp'
 Plug 'matsui54/ddc-ultisnips'
@@ -317,17 +318,24 @@ call ddc#custom#patch_global('sources', [
             \'dictionary',
             \])
 call ddc#custom#patch_global('sourceOptions', {
-            \'_': {'matchers': ['matcher_head'], 'sorters': ['sorter_rank']},
+            \'_': {
+                \'ignoreCase': v:true,
+                \'matchers': ['matcher_fuzzy'],
+                \'sorters': ['sorter_fuzzy'],
+                \'converters': ['converter_fuzzy'],
+                \},
             \'ultisnips': {'mark': 'US'},
             \'around': {'mark': 'A'},
-            \'vim-lsp': {'mark': 'lsp'},
+            \'vim-lsp': {'mark': 'lsp', 'minAutoCompleteLength': 1},
             \'tmux': {'mark': 'tmux'},
             \'buffer': {'mark': 'B'},
-            \'dictionary': {'mark': 'D'},
+            \'dictionary': {'mark': 'D', 'ignoreCase': v:false},
             \'file': {
                 \'mark': 'F',
                 \'isVolatile': v:true,
                 \'forceCompletionPattern': '\S/\S*',
+                \'matchers': ['matcher_head'],
+                \'sorters': ['sorter_rank'],
                 \}
             \})
 call ddc#custom#patch_global('sourceParams', {
@@ -343,6 +351,12 @@ call ddc#custom#patch_global('sourceParams', {
                 \'smartCase': v:true,
                 \'showMenu': v:false,
                 \},
+            \'tmux': {'excludeCurrentPane': v:true},
+            \'file': {
+                \'disableMenu': v:true,
+                \'projFromCwdMaxCandidates': [0],
+                \'projFromBufMaxCandidates': [0],
+                \}
             \})
 
 " <TAB>: completion.
