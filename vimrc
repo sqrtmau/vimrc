@@ -642,6 +642,9 @@ let g:cycle_default_groups = [
 let g:qf_mapping_ack_style = 1
 nmap <leader>q <Plug>(qf_qf_toggle)
 " }}}
+" gruvbox-material {{{
+let g:gruvbox_material_sign_column_background = 'none'
+" }}}
 " netrw (builtin) {{{
 " Disable netrw
 " let g:loaded_netrwPlugin = 1
