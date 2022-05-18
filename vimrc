@@ -107,6 +107,13 @@ Plug 'matsui54/ddc-buffer'
 Plug 'LumaKernel/ddc-file'
 Plug 'matsui54/ddc-dictionary'
 " }}}
+" Fundemental plugin to handle Nerd Fonts in Vim
+Plug 'lambdalisue/nerdfont.vim'
+" Directory viewer for Vim
+Plug 'justinmk/vim-dirvish'
+" File manipulation commands for vim-dirvish
+Plug 'roginfarrer/vim-dirvish-dovish'
+Plug 'justinmk/vim-gtfo'
 " Terminal manager for (neo)vim
 Plug 'voldikss/vim-floaterm'
 Plug 'sillybun/vim-repl'
@@ -118,14 +125,6 @@ Plug 'thinca/vim-quickrun'
 Plug 'tyru/open-browser.vim'
 Plug 'puremourning/vimspector'
 Plug 'Shougo/neoyank.vim'
-" General purpose asynchronous tree viewer written in Pure Vim script
-Plug 'lambdalisue/fern.vim'
-Plug 'lambdalisue/fern-hijack.vim'
-Plug 'lambdalisue/fern-git-status.vim'
-Plug 'lambdalisue/nerdfont.vim'
-Plug 'lambdalisue/fern-renderer-nerdfont.vim'
-Plug 'lambdalisue/fern-mapping-project-top.vim'
-Plug 'lambdalisue/fern-bookmark.vim'
 " Tame the quickfix window
 Plug 'romainl/vim-qf'
 Plug 'igankevich/mesonic'
@@ -378,26 +377,17 @@ call ddc#enable()
 let g:UltiSnipsExpandTrigger = '<c-j>'
 let g:UltiSnipsListSnippets = '<c-l>'
 " }}}
+" vim-dirvish {{{
+" https://github.com/justinmk/vim-dirvish/issues/145
+" call dirvish#add_icon_fn(function('nerdfont#find'))
+" }}}
+" vim-gtfo {{{
+let g:gtfo#terminals = {
+            \'unix': 'alacritty --working-directory ' . expand("%:p:h") . ' &',
+            \}
+" }}}
 " vim-floaterm {{{
 let g:floaterm_keymap_toggle = '<leader>m'
-" }}}
-" fern.vim {{{
-let g:fern#renderer = "nerdfont"
-let g:fern#hide_cursor = 1
-noremap <silent> <leader>e :Fern . -drawer -toggle -reveal=%<CR>
-function! s:init_fern() abort
-    set nonumber
-    set signcolumn=no
-    nmap <buffer> b :Fern bookmark:///<CR>
-endfunction
-
-augroup my_fern
-    autocmd! *
-    autocmd FileType fern call s:init_fern()
-augroup END
-" fern-bookmark.vim {{{
-let g:fern#scheme#bookmark#store#file = $XDG_CACHE_HOME . '/fern-bookmark.json'
-" }}}
 " }}}
 " vimspector {{{
 let g:vimspector_enable_mappings = 'HUMAN'
@@ -648,17 +638,17 @@ let g:gruvbox_material_better_performance = 1
 " }}}
 " netrw (builtin) {{{
 " Disable netrw
-" let g:loaded_netrwPlugin = 1
+let g:loaded_netrwPlugin = 1
 " let g:netrw_liststyle = 1
 " Suppress the banner
 " let g:netrw_banner = 0
 "" Keep the current directory the same as the browsing directory
 " let g:netrw_keepdir = 0
-let g:netrw_list_hide = '\(^\|\s\s\)\zs\.\S\+'
+" let g:netrw_list_hide = '\(^\|\s\s\)\zs\.\S\+'
 " let g:netrw_hide = 1
-let g:netrw_home = $XDG_CACHE_HOME . '/vim'
+" let g:netrw_home = $XDG_CACHE_HOME . '/vim'
 " Preview in vertically split window
-let g:netrw_preview = 1
+" let g:netrw_preview = 1
 " }}}
 " syntax/tex.vim (builtin) {{{
 " Set flavor filetype of .tex file
