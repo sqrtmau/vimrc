@@ -114,8 +114,6 @@ Plug 'justinmk/vim-dirvish'
 " File manipulation commands for vim-dirvish
 Plug 'roginfarrer/vim-dirvish-dovish'
 Plug 'justinmk/vim-gtfo'
-" Terminal manager for (neo)vim
-Plug 'voldikss/vim-floaterm'
 Plug 'sillybun/vim-repl'
 " use CTRL-A/CTRL-X to increment dates, times, and more
 Plug 'tpope/vim-speeddating'
@@ -385,9 +383,6 @@ let g:UltiSnipsListSnippets = '<c-l>'
 let g:gtfo#terminals = {
             \'unix': 'alacritty --working-directory ' . expand("%:p:h") . ' &',
             \}
-" }}}
-" vim-floaterm {{{
-let g:floaterm_keymap_toggle = '<leader>m'
 " }}}
 " vimspector {{{
 let g:vimspector_enable_mappings = 'HUMAN'
