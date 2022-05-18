@@ -95,36 +95,59 @@ Plug 'mattn/vim-lsp-settings'
 " Dark deno-powered completion framework for neovim/Vim8
 Plug 'Shougo/ddc.vim'
 " ddc stuffs {{{
+" An ecosystem of Vim/Neovim which allows developers to write cross-platform
+" plugins in Deno
 Plug 'vim-denops/denops.vim'
+" Heading matcher for ddc.vim
 Plug 'Shougo/ddc-matcher_head'
+" Matched rank order sorter for ddc.vim
 Plug 'Shougo/ddc-sorter_rank'
+" Fuzzy matcher, sorter, and conveter for ddc.vim
 Plug 'tani/ddc-fuzzy'
+" Around completion for ddc.vim
 Plug 'Shougo/ddc-around'
+" vim-lsp source for ddc.vim
 Plug 'shun/ddc-vim-lsp'
+" ultisnips source for ddc.vim
 Plug 'matsui54/ddc-ultisnips'
+" A source for ddc.vim to gather candidates from tmux panes
 Plug 'delphinus/ddc-tmux'
+" Buffer source for ddc.vim
 Plug 'matsui54/ddc-buffer'
+" Powerful and performant file name completion for ddc.vim
 Plug 'LumaKernel/ddc-file'
+" ddc source for dictionary
 Plug 'matsui54/ddc-dictionary'
 " }}}
+" The ultimate snippet solution for Vim
+Plug 'sirver/ultisnips'
+" vim-snipmate default snippets
+Plug 'honza/vim-snippets'
 " Fundemental plugin to handle Nerd Fonts in Vim
 Plug 'lambdalisue/nerdfont.vim'
 " Directory viewer for Vim
 Plug 'justinmk/vim-dirvish'
 " File manipulation commands for vim-dirvish
 Plug 'roginfarrer/vim-dirvish-dovish'
+" Go to Terminal or File manager
 Plug 'justinmk/vim-gtfo'
+" Best REPL environment for Vim
 Plug 'sillybun/vim-repl'
 " use CTRL-A/CTRL-X to increment dates, times, and more
 Plug 'tpope/vim-speeddating'
 " Cycle text within predefined candidates
 Plug 'bootleq/vim-cycle'
+" Run commands quickly
 Plug 'thinca/vim-quickrun'
+" Open URI with your favorite browser from your most favorite editor
 Plug 'tyru/open-browser.vim'
+" A multi-language debugging system for Vim
 Plug 'puremourning/vimspector'
+" Saves yank history includes unite.vim/denite.nvim history/yank source
 Plug 'Shougo/neoyank.vim'
 " Tame the quickfix window
 Plug 'romainl/vim-qf'
+" A Vim plugin for Meson build system
 Plug 'igankevich/mesonic'
 " Cross-file find and replace
 Plug 'brooth/far.vim'
@@ -135,10 +158,6 @@ Plug $HOME . '/Documents/projects/repos/vim-fly'
 Plug 'itchyny/lightline.vim'
 " A (Neo)vim plugin for formatting code.
 Plug 'sbdchd/neoformat'
-" The ultimate snippet solution for Vim
-Plug 'sirver/ultisnips'
-" vim-snipmate default snippets
-Plug 'honza/vim-snippets'
 " Adds file type icons to Vim plugins
 Plug 'ryanoasis/vim-devicons'
 " Viewer & Finder for LSP symbols and tags in Vim
