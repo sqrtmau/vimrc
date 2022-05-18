@@ -87,6 +87,7 @@ call mkdir($XDG_DATA_HOME."/vim/spell", 'p', 0700)
 " PLUGINS {{{
 " vim-plug {{{
 call plug#begin($XDG_DATA_HOME . '/vim/plugged')
+Plug 'dstein64/vim-startuptime'
 " async language server protocol plugin for vim and neovim
 Plug 'prabirshrestha/vim-lsp'
 " auto configurations for Language Server for vim-lsp
@@ -106,6 +107,8 @@ Plug 'matsui54/ddc-buffer'
 Plug 'LumaKernel/ddc-file'
 Plug 'matsui54/ddc-dictionary'
 " }}}
+" Terminal manager for (neo)vim
+Plug 'voldikss/vim-floaterm'
 Plug 'sillybun/vim-repl'
 " use CTRL-A/CTRL-X to increment dates, times, and more
 Plug 'tpope/vim-speeddating'
@@ -336,7 +339,7 @@ call ddc#custom#patch_global('sourceOptions', {
                 \'forceCompletionPattern': '\S/\S*',
                 \'matchers': ['matcher_head'],
                 \'sorters': ['sorter_rank'],
-                \}
+                \},
             \})
 call ddc#custom#patch_global('sourceParams', {
             \'around': {'maxSize': 500},
@@ -374,6 +377,9 @@ call ddc#enable()
 " UltiSnips {{{
 let g:UltiSnipsExpandTrigger = '<c-j>'
 let g:UltiSnipsListSnippets = '<c-l>'
+" }}}
+" vim-floaterm {{{
+let g:floaterm_keymap_toggle = '<leader>m'
 " }}}
 " fern.vim {{{
 let g:fern#renderer = "nerdfont"
@@ -638,6 +644,7 @@ nmap <leader>q <Plug>(qf_qf_toggle)
 " }}}
 " gruvbox-material {{{
 let g:gruvbox_material_sign_column_background = 'none'
+let g:gruvbox_material_better_performance = 1
 " }}}
 " netrw (builtin) {{{
 " Disable netrw
