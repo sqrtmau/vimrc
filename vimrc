@@ -397,6 +397,15 @@ let g:UltiSnipsListSnippets = '<c-l>'
 " vim-dirvish {{{
 " https://github.com/justinmk/vim-dirvish/issues/145
 " call dirvish#add_icon_fn(function('nerdfont#find'))
+" list dirs before files
+let g:dirvish_mode = 'sort ,^.*[\/],'
+
+augroup dirvish_config
+    autocmd!
+    " hide dotfiles
+    autocmd FileType dirvish nnoremap <silent><buffer> gh
+                \ :silent keeppatterns g@\v/\.[^\/]+/?$@d _<cr>:setl cole=3<cr>
+augroup END
 " }}}
 " vim-gtfo {{{
 let g:gtfo#terminals = {
