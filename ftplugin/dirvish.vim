@@ -54,37 +54,30 @@ function! s:get_visual_selection()
     return lines
 endfunction
 
-function! s:op_newfile() abort
-    " Prompt for new filename
-    let filename = input('File name: ')
-    if trim(filename) == ''
-        return
-    endif
-    " Append filename to the path of the current buffer
-    let filepath = expand("%") . filename
-
-    let output = system("touch " . shellescape(filepath))
-    if v:shell_error
-        call s:echom_error(cmd)
-    endif
-
-    " Reload the buffer
-    Dirvish %
+function! s:is_path_exists(path) abort
+    return !empty(glob(a:path))
 endfunction
 
-function! s:op_newdir() abort
-    let dirname = input('Directory name: ')
-    if trim(dirname) == ''
-        return
-    endif
-    let dirpath = expand("%") . dirname
-    if isdirectory(dirpath)
-        redraw
-        echomsg printf('"%s" already exists.', dirpath)
+function! s:op_create() abort
+    let path_name = input('New path: ')
+    if trim(path_name) == ''
         return
     endif
 
-    let output = system("mkdir -p " . shellescape(dirpath))
+    let new_path = expand("%") . path_name
+    if s:is_path_exists(new_path)
+        redraw
+        echomsg printf('"%s" already exists.', new_path)
+        return
+    endif
+
+    " if the given path endwith '/', create dir
+    if path_name =~# '/'
+        let output = system("mkdir -p " . shellescape(new_path))
+    else
+        let output = system("touch " . shellescape(new_path))
+    endif
+
     if v:shell_error
         call s:echom_error(output)
     endif
@@ -128,20 +121,6 @@ function! s:op_rename() abort
     Dirvish %
 endfunction
 
-function! s:is_prev_selections_valid() abort
-    if !exists('s:yanked') || len(s:yanked) < 1
-        return 0
-    endif
-
-    for target in s:yanked
-        if target == ''
-            return 0
-        endif
-    endfor
-
-    return 1
-endfunction
-
 function! s:prompt_user_for_rename_or_skip(filename) abort
     let ans = confirm(a:filename." already exists.", "&Rename\n&Abort", 2)
     if ans != 1
@@ -151,14 +130,14 @@ function! s:prompt_user_for_rename_or_skip(filename) abort
 endfunction
 
 function! s:op_move_selected_here() abort
-    if !s:is_prev_selections_valid()
+    if !argc()
         echomsg 'Select a path first!'
         return
     endif
 
     let cwd = getcwd()
     let dir_dest = expand("%")
-    for i in s:yanked
+    for i in argv()
         let item = i
         let filename = fnamemodify(item, ':t')
         let dirname = split(fnamemodify(item, ':p:h'), '/')[-1]
@@ -189,12 +168,14 @@ function! s:op_move_selected_here() abort
         endif
     endfor
 
-    " Reload the buffer
+    " clear arglist
+    arglocal!
+    " reload the buffer
     Dirvish %
 endfunction
 
 function! s:op_copy_selected_here() abort
-    if !s:is_prev_selections_valid()
+    if !argc()
         echomsg 'Select a path first!'
         return
     endif
@@ -202,7 +183,7 @@ function! s:op_copy_selected_here() abort
     let cwd = getcwd()
     let destinationDir = expand("%")
 
-    for i in s:yanked
+    for i in argv()
         let item = i
         let filename = fnamemodify(item, ':t')
         let dirname = split(fnamemodify(item, ':p:h'), '/')[-1]
@@ -234,21 +215,10 @@ function! s:op_copy_selected_here() abort
         endif
     endfor
 
-    " Reload the buffer
+    " clear arglist
+    arglocal!
+    " reload the buffer
     Dirvish %
-endfunction
-
-function! s:op_select() abort
-    let s:yanked = [trim(getline('.'))]
-    echo 'Selected '.s:yanked[0]
-endfunction
-
-function! s:op_select_v() abort
-    let lines = s:get_visual_selection()
-    let s:yanked = lines
-
-    let msg = 'Selected ' . len(lines) . ' file(s)'
-    echo msg
 endfunction
 
 function! s:echom_error(error) abort
@@ -257,11 +227,8 @@ function! s:echom_error(error) abort
     echohl WarningMsg | echomsg a:error | echohl None
 endfunction
 
-nnoremap <silent><buffer> mf :<C-U>call <SID>op_newfile()<CR>
-nnoremap <silent><buffer> mk :<C-U>call <SID>op_newdir()<CR>
+nnoremap <silent><buffer> C :<C-U>call <SID>op_create()<CR>
 nnoremap <silent><buffer> R :<C-U>call <SID>op_rename()<CR>
 nnoremap <silent><buffer> D :<C-U>call <SID>op_remove()<CR>
-nnoremap <silent><buffer> Y :<C-U>call <SID>op_select()<CR>
-xnoremap <silent><buffer> Y :<C-U>call <SID>op_select_v()<CR>
 nnoremap <silent><buffer> P :<C-U>call <SID>op_copy_selected_here()<CR>
 nnoremap <silent><buffer> M :<C-U>call <SID>op_move_selected_here()<CR>
