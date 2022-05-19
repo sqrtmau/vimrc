@@ -25,15 +25,41 @@ function! m#util#lsp_status()
     return msg
 endfunction
 
+function! s:echom_warn(message)
+    echohl WarningMsg
+    echom a:message
+    echohl None
+    return 0
+endfunction
+
 " Ref: https://retorque.re/zotero-better-bibtex/citing/cayw/
 function! m#util#zotero_cite() abort
+    if !executable('curl')
+        call s:echom_warn('curl not found')
+        return
+    endif
+
     let formats = {
-                \ 'markdown': 'formatted-bibliography',
-                \ 'pandoc': 'pandoc&brackets=1',
-                \ 'tex': 'latex',
-                \ }
+                \'markdown': 'formatted-bibliography',
+                \'pandoc': 'pandoc&brackets=1',
+                \'tex': 'latex',
+                \}
     let format = get(formats, &filetype, 'formatted-bibliography')
-    let api_call = 'http://127.0.0.1:23119/better-bibtex/cayw?format='.format
-    let ref = system('curl -s '.shellescape(api_call))
-    return ref
+    let api_call = 'http://127.0.0.1:23119/better-bibtex/cayw?format=' . format
+    try
+        silent let ref = system('curl -s ' . shellescape(api_call))
+    finally
+        if v:shell_error
+            call s:echom_warn('zotero not running')
+            return
+        endif
+    endtry
+
+    if !empty(ref)
+        let line = getline('.')
+        call setline('.',
+                    \strpart(line, 0, col('.') - 1)
+                    \. ref
+                    \. strpart(line, col('.') - 1))
+    endif
 endfunction
