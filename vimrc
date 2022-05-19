@@ -661,6 +661,7 @@ let g:gruvbox_material_better_performance = 1
 " }}}
 " netrw (builtin) {{{
 " Disable netrw
+let g:loaded_netrw = 1
 let g:loaded_netrwPlugin = 1
 " let g:netrw_liststyle = 1
 " Suppress the banner
