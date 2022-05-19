@@ -127,8 +127,6 @@ Plug 'honza/vim-snippets'
 Plug 'lambdalisue/nerdfont.vim'
 " Directory viewer for Vim
 Plug 'justinmk/vim-dirvish'
-" File manipulation commands for vim-dirvish
-Plug 'roginfarrer/vim-dirvish-dovish'
 " Go to Terminal or File manager
 Plug 'justinmk/vim-gtfo'
 " Best REPL environment for Vim
@@ -399,13 +397,6 @@ let g:UltiSnipsListSnippets = '<c-l>'
 " call dirvish#add_icon_fn(function('nerdfont#find'))
 " list dirs before files
 let g:dirvish_mode = 'sort ,^.*[\/],'
-
-augroup dirvish_config
-    autocmd!
-    " hide dotfiles
-    autocmd FileType dirvish nnoremap <silent><buffer> gh
-                \ :silent keeppatterns g@\v/\.[^\/]+/?$@d _<cr>:setl cole=3<cr>
-augroup END
 " }}}
 " vim-gtfo {{{
 let g:gtfo#terminals = {
