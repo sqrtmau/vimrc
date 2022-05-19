@@ -36,9 +36,18 @@ function! s:is_path_exists(path) abort
 endfunction
 
 function! s:op_create() abort
+    " if the user's input:
+    "   * contains '/': make parent dirs
+    "   * endwiths '/': create dir
+    "   * not endwiths '/': create file
     let path_name = input('New path: ')
     if trim(path_name) == ''
         return
+    endif
+
+    let want_dir = path_name =~# '/$'
+    if want_dir
+        let path_name = trim(path_name, '/')
     endif
 
     let new_path = expand("%") . path_name
@@ -48,11 +57,14 @@ function! s:op_create() abort
         return
     endif
 
-    " if the given path endwith '/', create dir
-    if path_name =~# '/'
+    if want_dir
         let output = system("mkdir -p " . shellescape(new_path))
     else
-        let output = system("touch " . shellescape(new_path))
+        let new_path_head = fnamemodify(new_path, ':h')
+        let output = system("mkdir -p " . shellescape(new_path_head))
+        if !v:shell_error
+            let output = system("touch " . shellescape(new_path))
+        endif
     endif
 
     if v:shell_error
