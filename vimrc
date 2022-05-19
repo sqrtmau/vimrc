@@ -758,38 +758,10 @@ set background=dark
 colorscheme gruvbox-material
 " }}}
 " MAPPINGS {{{
-" Personal mapping flavor
+" personal mapping flavor
+" <leader>c* -> lsp
 " <leader>d* -> daily life
 " <leader>f* -> fuzzy finder
 " <leader>*  -> frequently used commands
-" nnoremap <silent> <leader>q :windo lclose <Bar> cclose <Bar> pclose<CR>
-nnoremap <silent> <C-l>     :nohlsearch<CR>
-cabbrev W w
-cabbrev Q q
-cabbrev Qa qa
-cabbrev QA qa
-cabbrev Wq wq
-cabbrev WQ wq
-cabbrev Wqa wqa
-cabbrev WQa wqa
-cabbrev WQA wqa
-
-" Zotero {{{
-" Ref: https://retorque.re/zotero-better-bibtex/citing/cayw/
-function! ZoteroCite()
-    let formats = {
-                \ 'markdown': 'formatted-bibliography',
-                \ 'pandoc': 'pandoc&brackets=1',
-                \ 'tex': 'latex',
-                \ }
-    let format = get(formats, &filetype, 'formatted-bibliography')
-    let api_call = 'http://127.0.0.1:23119/better-bibtex/cayw?format='.format
-    let ref = system('curl -s '.shellescape(api_call))
-    return ref
-endfunction
-
-noremap <leader>z "=ZoteroCite()<CR>p
-inoremap <C-z> <C-r>=ZoteroCite()<CR>
-" }}}
 " }}}
 " vim: tw=78 foldenable foldmethod=marker foldcolumn=1

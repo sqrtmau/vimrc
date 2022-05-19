@@ -24,3 +24,16 @@ function! m#util#lsp_status()
     endif
     return msg
 endfunction
+
+" Ref: https://retorque.re/zotero-better-bibtex/citing/cayw/
+function! m#util#zotero_cite() abort
+    let formats = {
+                \ 'markdown': 'formatted-bibliography',
+                \ 'pandoc': 'pandoc&brackets=1',
+                \ 'tex': 'latex',
+                \ }
+    let format = get(formats, &filetype, 'formatted-bibliography')
+    let api_call = 'http://127.0.0.1:23119/better-bibtex/cayw?format='.format
+    let ref = system('curl -s '.shellescape(api_call))
+    return ref
+endfunction
